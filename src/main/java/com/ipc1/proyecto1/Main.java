@@ -3,132 +3,169 @@ package com.ipc1.proyecto1;
 import java.util.Scanner;
 
 // Idea clave:
-// Las clases como Animal representan los datos de una entidad.
-// Las clases como GestionAnimales contienen la logica para administrar
-// los objetos almacenados dentro de los arreglos estaticos.
+// Main funciona temporalmente como interfaz por terminal.
+// Aqui pedimos datos al usuario y llamamos a las clases de Gestion.
+// Las clases GestionAnimales y GestionAdoptantes contienen la logica
+// y administran sus respectivos arreglos estaticos.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Scanner entrada = new Scanner(System.in); // Permite leer lo que escribe el usuario
+        Scanner entrada = new Scanner(System.in);
 
-        GestionAnimales gestion = new GestionAnimales();
-        // Creamos un objeto GestionAnimales.
-        // Este objeto sera el encargado de guardar, buscar, listar,
-        // editar y eliminar animales dentro del arreglo estatico.
+        GestionAnimales gestionAnimales = new GestionAnimales();
+        GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
 
         int opcion = 0;
 
         do {
 
             System.out.println("\n=== CENTRO DE RESCATE ANIMAL ===");
-            System.out.println("1. Registrar animal");
-            System.out.println("2. Listar animales");
-            System.out.println("3. Buscar animal");
-            System.out.println("4. Editar estado");
-            System.out.println("5. Eliminar animal");
-            System.out.println("6. Salir");
+            System.out.println("1. Gestion de animales");
+            System.out.println("2. Gestion de adoptantes");
+            System.out.println("3. Salir");
             System.out.print("Seleccione una opcion: ");
 
             try {
 
-                opcion = Integer.parseInt(entrada.nextLine());
-                // Leemos primero como texto y luego convertimos a entero.
-                // Esto evita problemas que suelen aparecer al mezclar nextInt() con nextLine().
+                opcion = Integer.parseInt(entrada.nextLine()); //Pasamos lo ingresado por el usuario de String a numero int
 
                 switch (opcion) {
 
-                    case 1:
-                        registrarAnimal(entrada, gestion);
+                    case 1: //animales
+                        menuAnimales(entrada, gestionAnimales);
                         break;
 
-                    case 2:
-                        gestion.listarAnimales();
+                    case 2: //Adoptantes
+                        menuAdoptantes(entrada, gestionAdoptantes);
                         break;
 
-                    case 3:
-                        menuBusqueda(entrada, gestion);
-                        break;
-
-                    case 4:
-                        editarEstado(entrada, gestion);
-                        break;
-
-                    case 5:
-                        eliminarAnimal(entrada, gestion);
-                        break;
-
-                    case 6:
+                    case 3: //Salir
                         System.out.println("Saliendo del sistema...");
                         break;
 
-                    default:
+                    default: //No valida
                         System.out.println("Opcion no valida.");
                         break;
                 }
 
-            } catch (NumberFormatException e) {
-                // Si el usuario escribe algo como "Wachimingo"
-                // en vez de un numero, evitamos que el programa se caiga
+            } catch (NumberFormatException e) { //Si agarra un error lo mostramos
 
                 System.out.println("Debe ingresar un numero.");
             }
 
-        } while (opcion != 6); // Se repite hasta seleccionar la opcion 6
+        } while (opcion != 3); // Repetir mientras sea distinta a 3
 
         entrada.close();
     }
 
 
-    public static void registrarAnimal(
-            Scanner entrada,
-            GestionAnimales gestion) {
+    // =========================
+    // MENU DE ANIMALES
+    // =========================
+
+    public static void menuAnimales(Scanner entrada,GestionAnimales gestion) { //Si el usuario selecciono la opcion 1
+
+        int opcion = 0;
+
+        do {
+
+            System.out.println("\n=== GESTION DE ANIMALES ===");
+            System.out.println("1. Registrar animal");
+            System.out.println("2. Listar animales");
+            System.out.println("3. Buscar animal");
+            System.out.println("4. Editar estado");
+            System.out.println("5. Eliminar animal");
+            System.out.println("6. Regresar");
+            System.out.print("Seleccione una opcion: ");
+
+            try {
+
+                opcion = Integer.parseInt(entrada.nextLine()); //Pasamos lo ingresado por el usuario de String a numero int
+
+                switch (opcion) {
+
+                    case 1: //Registrar animal
+                        registrarAnimal(entrada, gestion);
+                        break;
+
+                    case 2: //Listar animales registrados
+                        gestion.listarAnimales();
+                        break;
+
+                    case 3: //Buscar animales registrados
+                        menuBusquedaAnimal(entrada, gestion);
+                        break;
+
+                    case 4: //Editar estado del animal
+                        editarEstadoAnimal(entrada, gestion);
+                        break;
+
+                    case 5: //Eliminar animal
+                        eliminarAnimal(entrada, gestion);
+                        break;
+
+                    case 6: //Regresar
+                        System.out.println("Regresando al menu principal...");
+                        break;
+
+                    default: //Salir
+                        System.out.println("Opcion no valida.");
+                        break;
+                }
+
+            } catch (NumberFormatException e) { //Mostrar error
+
+                System.out.println("Debe ingresar un numero.");
+            }
+
+        } while (opcion != 6); //Repetir siemore que la opcion sea distinta a 6
+    }
+
+
+    public static void registrarAnimal(Scanner entrada,GestionAnimales gestion) { //Opcion 1 de animales
 
         System.out.println("\n=== REGISTRAR ANIMAL ===");
 
         System.out.print("Codigo: ");
-        String codigo = entrada.nextLine().trim();
-        // trim() elimina espacios innecesarios al inicio y al final
+        String codigo = entrada.nextLine().trim(); //Pedimos codigo y eliminamos espacios al principio y al final
 
         System.out.print("Nombre: ");
-        String nombre = entrada.nextLine().trim();
+        String nombre = entrada.nextLine().trim(); //Pedimos nombre del animal y eliminamos espacios al principio y al final
 
         System.out.print("Especie (Perro/Gato): ");
-        String especie = entrada.nextLine().trim();
+        String especie = entrada.nextLine().trim(); //Adivina que pide... -_-
 
-        // Validamos que los campos de texto no esten vacios
-        if (codigo.isEmpty() || nombre.isEmpty() || especie.isEmpty()) {
+        if (codigo.isEmpty()|| nombre.isEmpty()|| especie.isEmpty()) { //Si esta vacio algun campo devuelve el mensaje de error ( || = "OR")
+
             System.out.println("Los campos no pueden estar vacios.");
-            return; // Terminamos este metodo y regresamos al menu
+            return;
         }
 
-        // El proyecto trabaja especificamente con perros y gatos
         if (!especie.equalsIgnoreCase("Perro")
                 && !especie.equalsIgnoreCase("Gato")) {
 
             System.out.println("La especie debe ser Perro o Gato.");
-            return;
+            return; //hacemos return para evitar que pase al siguiente paso, obligando al usuario a agregar los datos correctos
         }
 
         try {
 
             System.out.print("Edad: ");
-            int edad = Integer.parseInt(entrada.nextLine());
-            // Leemos la edad como texto y luego la convertimos a entero
+            int edad = Integer.parseInt(entrada.nextLine()); //Pedimos la edad en forma de String para luego pasarla a numero
 
             if (edad < 0) {
-                System.out.println("La edad no puede ser negativa.");
+
+                System.out.println("La edad no puede ser negativa."); //Si la edad es un numero negativo O NO ES UN NUMERO da error
                 return;
             }
 
             Animal nuevoAnimal =
-                    new Animal(codigo, nombre, especie, edad);
-            // Creamos un objeto Animal con los datos ingresados
+                    new Animal(codigo, nombre, especie, edad); //Al completar todo se registra el animal
 
             boolean registrado =
                     gestion.registrarAnimal(nuevoAnimal);
-            // Le pedimos a GestionAnimales que intente guardarlo en su arreglo
 
             if (registrado) {
 
@@ -137,22 +174,19 @@ public class Main {
             } else {
 
                 System.out.println(
-                        "No se pudo registrar. El codigo ya existe "
-                        + "o no hay espacio disponible."
+                        "No se pudo registrar. "
+                        + "El codigo ya existe o no hay espacio disponible."
                 );
             }
 
-        } catch (NumberFormatException e) {
-
-            // Evitamos que el programa falle si escriben "cinco"
-            // o cualquier texto donde deberia ir una edad
+        } catch (NumberFormatException e) { //Por si ponen de edad algo que no es un numero...arriba puse algo que me da pereza borrar XD
 
             System.out.println("La edad debe ser un numero entero.");
         }
     }
 
-
-    public static void menuBusqueda(
+    // Menu buscar animal
+    public static void menuBusquedaAnimal(
             Scanner entrada,
             GestionAnimales gestion) {
 
@@ -166,40 +200,59 @@ public class Main {
         try {
 
             int opcionBusqueda =
-                    Integer.parseInt(entrada.nextLine());
+                    Integer.parseInt(entrada.nextLine()); //Leemos la opcion que selecciono el usuario y lo pasamos a numero
 
             switch (opcionBusqueda) {
 
                 case 1:
-                    buscarAnimalPorCodigo(entrada, gestion);
+
+                    System.out.print("Codigo: ");
+                    String codigo = entrada.nextLine().trim(); 
+
+                    Animal encontrado =
+                            gestion.buscarPorCodigo(codigo); //El animal pasa a ser "encontrado"
+
+                    if (encontrado != null) {
+
+                        gestion.mostrarAnimal(encontrado); //Si es distinto a null, se muestra el animal
+
+                    } else {
+
+                        System.out.println("Animal no encontrado.");
+                    }
+
                     break;
 
                 case 2:
 
-                    System.out.print("Ingrese el nombre: ");
-                    String nombre = entrada.nextLine().trim();
+                    System.out.print("Nombre: ");
+                    gestion.buscarPorNombre(
+                            entrada.nextLine().trim()
+                    );
 
-                    gestion.buscarPorNombre(nombre);
                     break;
 
                 case 3:
 
-                    System.out.print("Ingrese la especie: ");
-                    String especie = entrada.nextLine().trim();
+                    System.out.print("Especie: ");
+                    gestion.buscarPorEspecie(
+                            entrada.nextLine().trim()
+                    );
 
-                    gestion.buscarPorEspecie(especie);
                     break;
 
                 case 4:
 
-                    System.out.print("Ingrese el estado: ");
-                    String estado = entrada.nextLine().trim();
+                    System.out.print("Estado: ");
+                    gestion.buscarPorEstado(
+                            entrada.nextLine().trim()
+                    );
 
-                    gestion.buscarPorEstado(estado);
                     break;
 
                 default:
-                    System.out.println("Opcion de busqueda no valida.");
+
+                    System.out.println("Opcion no valida.");
                     break;
             }
 
@@ -209,74 +262,37 @@ public class Main {
         }
     }
 
+    //Editar estado animal
+    public static void editarEstadoAnimal(Scanner entrada,GestionAnimales gestion) {
 
-    public static void buscarAnimalPorCodigo(
-            Scanner entrada,
-            GestionAnimales gestion) {
-
-        System.out.println("\n=== BUSCAR POR CODIGO ===");
-
-        System.out.print("Ingrese el codigo: ");
-        String codigo = entrada.nextLine().trim();
-
-        Animal encontrado =
-                gestion.buscarPorCodigo(codigo);
-        // GestionAnimales devuelve el objeto si existe,
-        // o devuelve null si no pudo encontrarlo
-
-        if (encontrado != null) {
-
-            System.out.println("\nAnimal encontrado:");
-
-            System.out.println("Codigo: " + encontrado.getCodigo());
-            System.out.println("Nombre: " + encontrado.getNombre());
-            System.out.println("Especie: " + encontrado.getEspecie());
-            System.out.println("Edad: " + encontrado.getEdad());
-            System.out.println("Estado: " + encontrado.getEstado());
-
-        } else {
-
-            System.out.println(
-                    "No se encontro un animal con ese codigo."
-            );
-        }
-    }
-
-    // Editar estado del animal 
-    public static void editarEstado(
-            Scanner entrada,
-            GestionAnimales gestion) {
-
-        //Comprobamos los campos vacios 
         System.out.println("\n=== EDITAR ESTADO ===");
 
         System.out.print("Codigo del animal: ");
-        String codigo = entrada.nextLine().trim();
+        String codigo = entrada.nextLine().trim(); //Pedimos codigo del animal
 
         System.out.print("Nuevo estado: ");
-        String nuevoEstado = entrada.nextLine().trim();
+        String nuevoEstado = entrada.nextLine().trim(); //Pedimos el nuevo estado
 
-        if (codigo.isEmpty() || nuevoEstado.isEmpty()) {
+        if (codigo.isEmpty()
+                || nuevoEstado.isEmpty()) {
 
             System.out.println("Los campos no pueden estar vacios.");
             return;
         }
-        
-        if (!gestion.estadoValido(nuevoEstado)) {
-                System.out.println("Estado no valido.");
-                System.out.println("Estados permitidos:");
-                System.out.println("- Ingresado");
-                System.out.println("- En tratamiento");
-                System.out.println("- Disponible");
-                System.out.println("- Adoptado");
 
-                return;
+        if (!gestion.estadoValido(nuevoEstado)) {
+
+            System.out.println("Estado no valido.");
+            System.out.println("Estados permitidos:");
+            System.out.println("- Ingresado");
+            System.out.println("- En tratamiento");
+            System.out.println("- Disponible");
+            System.out.println("- Adoptado");
+
+            return;
         }
 
-        boolean editado =
-                gestion.editarEstado(codigo, nuevoEstado);
-
-        if (editado) {
+        if (gestion.editarEstado(codigo, nuevoEstado)) {
 
             System.out.println("Estado actualizado correctamente.");
 
@@ -286,10 +302,8 @@ public class Main {
         }
     }
 
-
-    public static void eliminarAnimal(
-            Scanner entrada,
-            GestionAnimales gestion) {
+    // Eliminar animal
+    public static void eliminarAnimal(Scanner entrada,GestionAnimales gestion) {
 
         System.out.println("\n=== ELIMINAR ANIMAL ===");
 
@@ -302,16 +316,228 @@ public class Main {
             return;
         }
 
-        boolean eliminado =
-                gestion.eliminarAnimal(codigo);
-
-        if (eliminado) {
+        if (gestion.eliminarAnimal(codigo)) {
 
             System.out.println("Animal eliminado correctamente.");
 
         } else {
 
             System.out.println("Animal no encontrado.");
+        }
+    }
+
+
+    // =========================
+    // MENU DE ADOPTANTES
+    // =========================
+
+    public static void menuAdoptantes(Scanner entrada,GestionAdoptantes gestion) {
+
+        int opcion = 0;
+
+        do {
+
+            System.out.println("\n=== GESTION DE ADOPTANTES ===");
+            System.out.println("1. Registrar adoptante");
+            System.out.println("2. Listar adoptantes");
+            System.out.println("3. Buscar adoptante");
+            System.out.println("4. Editar adoptante");
+            System.out.println("5. Regresar");
+            System.out.print("Seleccione una opcion: ");
+
+            try {
+
+                opcion = Integer.parseInt(entrada.nextLine());
+
+                switch (opcion) {
+
+                    case 1:
+                        registrarAdoptante(entrada, gestion);
+                        break;
+
+                    case 2:
+                        gestion.listarAdoptantes();
+                        break;
+
+                    case 3:
+                        buscarAdoptante(entrada, gestion);
+                        break;
+
+                    case 4:
+                        editarAdoptante(entrada, gestion);
+                        break;
+
+                    case 5:
+                        System.out.println("Regresando al menu principal...");
+                        break;
+
+                    default:
+                        System.out.println("Opcion no valida.");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+
+                System.out.println("Debe ingresar un numero.");
+            }
+
+        } while (opcion != 5);
+    }
+
+    // Registrar adoptante
+    public static void registrarAdoptante(
+            Scanner entrada,
+            GestionAdoptantes gestion) {
+
+        System.out.println("\n=== REGISTRAR ADOPTANTE ===");
+
+        System.out.print("Codigo: ");
+        String codigo = entrada.nextLine().trim();
+
+        System.out.print("Nombre: ");
+        String nombre = entrada.nextLine().trim();
+
+        System.out.print("Telefono: ");
+        String telefono = entrada.nextLine().trim();
+
+        System.out.print("Correo: ");
+        String correo = entrada.nextLine().trim();
+
+        if (codigo.isEmpty()
+                || nombre.isEmpty()
+                || telefono.isEmpty()
+                || correo.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+        Adoptante nuevoAdoptante =
+                new Adoptante(
+                        codigo,
+                        nombre,
+                        telefono,
+                        correo
+                );
+
+        boolean registrado =
+                gestion.registrarAdoptante(nuevoAdoptante);
+
+        if (registrado) {
+
+            System.out.println("Adoptante registrado correctamente.");
+
+        } else {
+
+            System.out.println(
+                    "No se pudo registrar. "
+                    + "El codigo ya existe o no hay espacio disponible."
+            );
+        }
+    }
+
+
+    public static void buscarAdoptante(
+            Scanner entrada,
+            GestionAdoptantes gestion) {
+
+        System.out.println("\n=== BUSCAR ADOPTANTE ===");
+        System.out.println("1. Buscar por codigo");
+        System.out.println("2. Buscar por nombre");
+        System.out.print("Seleccione una opcion: ");
+
+        try {
+
+            int opcion =
+                    Integer.parseInt(entrada.nextLine());
+
+            switch (opcion) {
+
+                case 1:
+
+                    System.out.print("Codigo: ");
+                    String codigo =
+                            entrada.nextLine().trim();
+
+                    Adoptante encontrado =
+                            gestion.buscarPorCodigo(codigo);
+
+                    if (encontrado != null) {
+
+                        gestion.mostrarAdoptante(encontrado);
+
+                    } else {
+
+                        System.out.println("Adoptante no encontrado.");
+                    }
+
+                    break;
+
+                case 2:
+
+                    System.out.print("Nombre: ");
+
+                    gestion.buscarPorNombre(
+                            entrada.nextLine().trim()
+                    );
+
+                    break;
+
+                default:
+
+                    System.out.println("Opcion no valida.");
+                    break;
+            }
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Debe ingresar un numero.");
+        }
+    }
+
+
+    public static void editarAdoptante(
+            Scanner entrada,
+            GestionAdoptantes gestion) {
+
+        System.out.println("\n=== EDITAR ADOPTANTE ===");
+
+        System.out.print("Codigo del adoptante: ");
+        String codigo = entrada.nextLine().trim();
+
+        System.out.print("Nuevo nombre: ");
+        String nombre = entrada.nextLine().trim();
+
+        System.out.print("Nuevo telefono: ");
+        String telefono = entrada.nextLine().trim();
+
+        System.out.print("Nuevo correo: ");
+        String correo = entrada.nextLine().trim();
+
+        if (codigo.isEmpty()
+                || nombre.isEmpty()
+                || telefono.isEmpty()
+                || correo.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+        boolean editado =
+                gestion.editarAdoptante(
+                        codigo,
+                        nombre,
+                        telefono,
+                        correo
+                );
+
+        if (editado) {
+
+            System.out.println("Adoptante editado correctamente.");
+
+        } else {
+
+            System.out.println("Adoptante no encontrado.");
         }
     }
 }

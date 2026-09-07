@@ -108,16 +108,23 @@ public class GestionAnimales {
         }
     }
 
-
+    // Editar estado de los animales
     public boolean editarEstado(String codigo, String nuevoEstado) {
 
-        Animal animal = buscarPorCodigo(codigo); // Aprovechamos el metodo de busqueda que ya hicimos
-
-        if (animal != null) {
-            animal.setEstado(nuevoEstado); // Modificamos el mismo objeto que ya esta guardado en el arreglo
-            return true;
+        // Revisamos que el estado a asignar sea valido
+        if (!estadoValido(nuevoEstado)){
+            return false;
         }
-
+        
+        Animal animal = buscarPorCodigo(codigo);
+        //Reutilizamos nuestro metodo de busqueda para encontrar al animal
+        
+        if (animal!= null){
+            
+            animal.setEstado(nuevoEstado);
+            //Modificamos el estado del mismo objeto que ya esta dentro del arreglo
+            return false;
+        }
         return false;
     }
 
@@ -126,9 +133,7 @@ public class GestionAnimales {
 
         Animal animal = buscarPorCodigo(codigo);
 
-        if (animal != null) {
-
-            animal.setActivo(false);
+        if (animal != null) {animal.setActivo(false);
             // Eliminacion LOGICA:
             // El objeto sigue dentro del arreglo, pero activo pasa a false
             // Por eso ya no aparecera en busquedas ni listados normales
@@ -160,7 +165,7 @@ public class GestionAnimales {
         }
     }
 
-
+    // Mostrar animales
     public void mostrarAnimal(Animal animal) {
 
         // Metodo auxiliar para no repetir el mismo System.out.println
@@ -174,4 +179,15 @@ public class GestionAnimales {
                 + animal.getEstado()
         );
     }
-}
+        // Estados de los animales
+    public boolean estadoValido(String estado){
+        
+        // Vamos a manejra estos cuatro estados ya que el documento no especifica
+        
+        return estado.equalsIgnoreCase("Ingresado")
+                || estado.equalsIgnoreCase("En tratamiento")
+                || estado.equalsIgnoreCase("Disponible")
+                || estado.equalsIgnoreCase("Adoptado");
+                
+    }
+} //fin del metodo
