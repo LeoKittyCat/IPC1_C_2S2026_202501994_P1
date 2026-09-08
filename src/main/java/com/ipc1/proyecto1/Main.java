@@ -18,6 +18,8 @@ public class Main {
         GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
         GestionSolicitudes gestionSolicitudes = new GestionSolicitudes();
         GestionRescate gestionRescate = new GestionRescate();
+        GestionUbicaciones gestionUbicaciones = new GestionUbicaciones();
+
 
         
         // Cada gestor administra su propio arreglo estatico:
@@ -25,6 +27,7 @@ public class Main {
         // GestionAdoptantes   -> Adoptante[]
         // GestionSolicitudes  -> Solicitud[]
         // GestionRescate      -> Rescates[]
+        // GestionUbicaciones  -> Ubicaciones[]
         int opcion = 0;
 
         do {
@@ -33,8 +36,9 @@ public class Main {
             System.out.println("1. Gestion de animales");
             System.out.println("2. Gestion de adoptantes");
             System.out.println("3. Gestion de solicitudes");
-            System.out.println("3. Gestion de rescates");
-            System.out.println("5. Salir");
+            System.out.println("4. Gestion de rescates");
+            System.out.println("5. Ubicaciones del refugio");
+            System.out.println("6. Salir");
             System.out.print("Seleccione una opcion: ");
 
             try {
@@ -58,7 +62,12 @@ public class Main {
                     case 4: //Gestionar Rescate
                         menuRescates(entrada,gestionRescate);
                         break;
-                    case 5: //Salir
+                        
+                    case 5:
+                        menuUbicaciones(entrada,gestionUbicaciones,gestionAnimales);
+                        break;
+                        
+                    case 6: //Salir
                         System.out.println("Saliendo del sistema...");
                         break;
                         
@@ -72,7 +81,7 @@ public class Main {
                 System.out.println("Debe ingresar un numero.");
             }
 
-        } while (opcion != 5); // Repetir mientras sea distinta a 5
+        } while (opcion != 6); // Repetir mientras sea distinta a 5
 
         entrada.close();
     }
@@ -974,6 +983,243 @@ public class Main {
         } else {
 
             System.out.println("Rescate no encontrado.");
+        }
+    }
+    
+    // =========================
+    // MENU DE UBICACIONES
+    // =========================
+
+    public static void menuUbicaciones(
+            Scanner entrada,
+            GestionUbicaciones gestionUbicaciones,
+            GestionAnimales gestionAnimales) {
+
+        int opcion = 0;
+
+        do {
+
+            System.out.println("\n=== UBICACIONES DEL REFUGIO ===");
+            System.out.println("1. Ver matriz");
+            System.out.println("2. Asignar animal");
+            System.out.println("3. Consultar disponibilidad");
+            System.out.println("4. Liberar espacio");
+            System.out.println("5. Regresar");
+            System.out.print("Seleccione una opcion: ");
+
+            try {
+
+                opcion = Integer.parseInt(entrada.nextLine());
+
+                switch (opcion) {
+
+                    case 1:
+                        gestionUbicaciones.mostrarMatriz();
+                        break;
+
+                    case 2:
+                        asignarAnimalEspacio(
+                                entrada,
+                                gestionUbicaciones,
+                                gestionAnimales
+                        );
+                        break;
+
+                    case 3:
+                        consultarDisponibilidad(
+                                entrada,
+                                gestionUbicaciones
+                        );
+                        break;
+
+                    case 4:
+                        liberarEspacio(
+                                entrada,
+                                gestionUbicaciones
+                        );
+                        break;
+
+                    case 5:
+                        System.out.println("Regresando al menu principal...");
+                        break;
+
+                    default:
+                        System.out.println("Opcion no valida.");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+
+                // Evita que el programa se caiga si se escribe texto
+                // donde deberia ir un numero
+                System.out.println("Debe ingresar un numero.");
+            }
+
+        } while (opcion != 5);
+    }
+    
+    // =========================
+    // ASIGNAR ANIMAL A UN ESPACIO
+    // =========================
+
+    public static void asignarAnimalEspacio(
+            Scanner entrada,
+            GestionUbicaciones gestionUbicaciones,
+            GestionAnimales gestionAnimales) {
+
+        System.out.println("\n=== ASIGNAR ANIMAL ===");
+
+        System.out.print("Codigo del animal: ");
+        String codigo = entrada.nextLine().trim();
+
+        // Busca al animal en GestionAnimales antes de meterlo en la matriz
+        Animal animal = gestionAnimales.buscarPorCodigo(codigo);
+
+        if (animal == null) {
+
+            System.out.println("Animal no encontrado.");
+            return;
+        }
+
+        try {
+
+            System.out.println("Areas:");
+            System.out.println("0. Perros");
+            System.out.println("1. Gatos");
+            System.out.println("2. Veterinaria");
+
+            System.out.print("Fila: ");
+            int fila = Integer.parseInt(entrada.nextLine());
+
+            System.out.print("Espacio (0-4): ");
+            int columna = Integer.parseInt(entrada.nextLine());
+
+
+            // Primero revisa que la fila y columna existan
+            if (!gestionUbicaciones.posicionValida(fila, columna)) {
+
+                System.out.println("La posicion no existe.");
+                return;
+            }
+            
+            // Revisa que la especie coincida con el area elegida
+            if (!gestionUbicaciones.areaValidaParaAnimal(fila, animal)) {
+
+                System.out.println("Ese animal no puede ser asignado a esa area.");
+                return;
+            }
+            
+            // Evita que el mismo animal ocupe dos espacios al mismo tiempo
+            if (gestionUbicaciones.animalYaAsignado(animal)) {
+
+                System.out.println("El animal ya tiene un espacio asignado.");
+                return;
+            }
+
+
+            // No deja meter otro animal si la casilla ya esta ocupada
+            if (!gestionUbicaciones.estaDisponible(fila, columna)) {
+
+                System.out.println("Ese espacio ya esta ocupado.");
+                return;
+            }
+
+
+            if (gestionUbicaciones.asignarAnimal(
+                    fila,
+                    columna,
+                    animal)) {
+
+                System.out.println("Animal asignado correctamente.");
+            }
+
+        } catch (NumberFormatException e) {
+
+            // La fila y columna tienen que ser numeros
+            System.out.println("Fila y espacio deben ser numeros.");
+        }
+    }
+    
+    // =========================
+    // CONSULTAR DISPONIBILIDAD
+    // =========================
+
+    public static void consultarDisponibilidad(
+            Scanner entrada,
+            GestionUbicaciones gestionUbicaciones) {
+
+        System.out.println("\n=== CONSULTAR DISPONIBILIDAD ===");
+
+        try {
+
+            System.out.print("Fila (0-2): ");
+            int fila = Integer.parseInt(entrada.nextLine());
+
+            System.out.print("Espacio (0-4): ");
+            int columna = Integer.parseInt(entrada.nextLine());
+
+
+            if (!gestionUbicaciones.posicionValida(fila, columna)) {
+
+                System.out.println("La posicion no existe.");
+                return;
+            }
+
+
+            if (gestionUbicaciones.estaDisponible(fila, columna)) {
+
+                System.out.println("El espacio esta disponible.");
+
+            } else {
+
+                System.out.println("El espacio esta ocupado.");
+            }
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Fila y espacio deben ser numeros.");
+        }
+    }
+    
+    // =========================
+    // LIBERAR ESPACIO
+    // =========================
+
+    public static void liberarEspacio(
+            Scanner entrada,
+            GestionUbicaciones gestionUbicaciones) {
+
+        System.out.println("\n=== LIBERAR ESPACIO ===");
+
+        try {
+
+            System.out.print("Fila (0-2): ");
+            int fila = Integer.parseInt(entrada.nextLine());
+
+            System.out.print("Espacio (0-4): ");
+            int columna = Integer.parseInt(entrada.nextLine());
+
+
+            if (!gestionUbicaciones.posicionValida(fila, columna)) {
+
+                System.out.println("La posicion no existe.");
+                return;
+            }
+
+
+            if (gestionUbicaciones.liberarEspacio(fila, columna)) {
+
+                // liberarEspacio pone animal = null dentro de esa casilla
+                System.out.println("Espacio liberado correctamente.");
+
+            } else {
+
+                System.out.println("El espacio ya estaba libre.");
+            }
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Fila y espacio deben ser numeros.");
         }
     }
 }
