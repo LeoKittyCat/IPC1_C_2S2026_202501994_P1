@@ -28,6 +28,11 @@ public class Main {
         PersistenciaRescate.cargarRescates(gestionRescate);
         // Recupera los rescates guardados al iniciar el programa
         GestionUbicaciones gestionUbicaciones = new GestionUbicaciones();
+        
+        GestionUsuarios gestionUsuarios = new GestionUsuarios();
+
+        PersistenciaUsuarios.cargarUsuarios(gestionUsuarios);
+        // Carga los usuarios desde usuarios.txt
 
         
         // Cada gestor administra su propio arreglo estatico:
@@ -37,7 +42,23 @@ public class Main {
         // GestionRescate      -> Rescates[]
         // GestionUbicaciones  -> Ubicaciones[]
         int opcion = 0;
+        
+        Usuario usuarioActual = iniciarSesion(entrada, gestionUsuarios);
 
+        // Si por alguna razon no se pudo iniciar sesion no deja entrar al sistema
+        if (usuarioActual == null) {
+            System.out.println("No se pudo iniciar sesion");
+            entrada.close();
+            return;
+        }
+
+        System.out.println(
+                "\nBienvenido "
+                + usuarioActual.getUsuario()
+                + " | Rol: "
+                + usuarioActual.getRol()
+        );
+        
         do {
 
             System.out.println("\n=== CENTRO DE RESCATE ANIMAL ===");
@@ -1241,5 +1262,51 @@ public class Main {
 
             System.out.println("Fila y espacio deben ser numeros.");
         }
+    }
+    
+    // =========================
+    // INICIAR SESION
+    // =========================
+
+    public static Usuario iniciarSesion(
+            Scanner entrada,
+            GestionUsuarios gestionUsuarios) {
+
+        System.out.println("\n=== INICIO DE SESION ===");
+
+        // Da 3 intentos antes de cerrar el programa
+        for (int intento = 1; intento <= 3; intento++) {
+
+            System.out.print("Usuario: ");
+            String usuario = entrada.nextLine().trim();
+
+            System.out.print("Contrasena: ");
+            String contrasena = entrada.nextLine();
+
+            // Busca las credenciales dentro del arreglo de usuarios
+            Usuario encontrado =
+                    gestionUsuarios.iniciarSesion(
+                            usuario,
+                            contrasena
+                    );
+
+            if (encontrado != null) {
+
+                System.out.println("Inicio de sesion correcto");
+                return encontrado;
+            }
+
+            System.out.println(
+                    "Usuario o contrasena incorrectos"
+            );
+
+            System.out.println(
+                    "Intentos restantes: "
+                    + (3 - intento)
+            );
+        }
+
+        // Si gasto los 3 intentos devuelve null
+        return null;
     }
 }
