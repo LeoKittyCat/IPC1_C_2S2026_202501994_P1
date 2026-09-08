@@ -67,7 +67,6 @@ public class GestionSolicitudes {
     // =========================
     // CAMBIAR ESTADO
     // =========================
-
     public boolean cambiarEstado(
             String codigo,
             String nuevoEstado) {
@@ -96,12 +95,10 @@ public class GestionSolicitudes {
     // =========================
     // VALIDAR ESTADO
     // =========================
-
     public boolean estadoValido(String estado) {
 
         // Estos estados son una decision de diseño nuestra,
         // ya que el documento no proporciona una lista exacta.
-        // Si el auxiliar indica otros estados, podemos cambiarlos aqui.
 
         return estado.equalsIgnoreCase("Pendiente")
                 || estado.equalsIgnoreCase("Aprobada")
@@ -112,7 +109,6 @@ public class GestionSolicitudes {
     // =========================
     // LISTAR PENDIENTES
     // =========================
-
     public void listarPendientes() {
 
         System.out.println("\n=== SOLICITUDES PENDIENTES ===");

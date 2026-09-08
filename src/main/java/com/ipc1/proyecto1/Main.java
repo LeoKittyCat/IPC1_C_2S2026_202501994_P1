@@ -17,11 +17,14 @@ public class Main {
         GestionAnimales gestionAnimales = new GestionAnimales();
         GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
         GestionSolicitudes gestionSolicitudes = new GestionSolicitudes();
+        GestionRescate gestionRescate = new GestionRescate();
+
         
         // Cada gestor administra su propio arreglo estatico:
         // GestionAnimales     -> Animal[]
         // GestionAdoptantes   -> Adoptante[]
         // GestionSolicitudes  -> Solicitud[]
+        // GestionRescate      -> Rescates[]
         int opcion = 0;
 
         do {
@@ -29,8 +32,9 @@ public class Main {
             System.out.println("\n=== CENTRO DE RESCATE ANIMAL ===");
             System.out.println("1. Gestion de animales");
             System.out.println("2. Gestion de adoptantes");
-            System.out.println("3. Gestion de Solicitudes");
-            System.out.println("4. Salir");
+            System.out.println("3. Gestion de solicitudes");
+            System.out.println("3. Gestion de rescates");
+            System.out.println("5. Salir");
             System.out.print("Seleccione una opcion: ");
 
             try {
@@ -50,7 +54,11 @@ public class Main {
                     case 3: //Gestionar Solicitued
                         menuSolicitudes(entrada,gestionSolicitudes,gestionAnimales,gestionAdoptantes);
                         break;
-                    case 4: //Salir
+                        
+                    case 4: //Gestionar Rescate
+                        menuRescates(entrada,gestionRescate);
+                        break;
+                    case 5: //Salir
                         System.out.println("Saliendo del sistema...");
                         break;
                         
@@ -64,7 +72,7 @@ public class Main {
                 System.out.println("Debe ingresar un numero.");
             }
 
-        } while (opcion != 4); // Repetir mientras sea distinta a 3
+        } while (opcion != 5); // Repetir mientras sea distinta a 5
 
         entrada.close();
     }
@@ -750,6 +758,222 @@ public class Main {
         } else {
 
             System.out.println("Solicitud no encontrada.");
+        }
+    }
+    
+    // =========================
+    // MENU DE RESCATES
+    // =========================
+
+    public static void menuRescates(
+            Scanner entrada,
+            GestionRescate gestion) {
+
+        int opcion = 0;
+
+        do {
+
+            System.out.println("\n=== GESTION DE RESCATES ===");
+            System.out.println("1. Registrar rescate");
+            System.out.println("2. Listar rescates activos");
+            System.out.println("3. Cambiar prioridad");
+            System.out.println("4. Atender rescate");
+            System.out.println("5. Ver historial");
+            System.out.println("6. Regresar");
+            System.out.print("Seleccione una opcion: ");
+
+            try {
+
+                opcion = Integer.parseInt(entrada.nextLine());
+
+                switch (opcion) {
+
+                    case 1:
+                        registrarRescate(entrada, gestion);
+                        break;
+
+                    case 2:
+                        gestion.listarActivos();
+                        break;
+
+                    case 3:
+                        cambiarPrioridadRescate(entrada, gestion);
+                        break;
+
+                    case 4:
+                        atenderRescate(entrada, gestion);
+                        break;
+
+                    case 5:
+                        gestion.mostrarHistorial();
+                        break;
+
+                    case 6:
+                        System.out.println("Regresando al menu principal...");
+                        break;
+
+                    default:
+                        System.out.println("Opcion no valida.");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+
+                // Evitamos que el programa se caiga si el usuario
+                // escribe texto en lugar de una opcion numerica
+                System.out.println("Debe ingresar un numero.");
+            }
+
+        } while (opcion != 6);
+    }
+    
+    // =========================
+    // REGISTRAR RESCATE
+    // =========================
+
+    public static void registrarRescate(
+            Scanner entrada,
+            GestionRescate gestion) {
+
+        System.out.println("\n=== REGISTRAR RESCATE ===");
+
+        System.out.print("Codigo: ");
+        String codigo = entrada.nextLine().trim();
+
+        System.out.print("Descripcion: ");
+        String descripcion = entrada.nextLine().trim();
+
+        System.out.print("Ubicacion: ");
+        String ubicacion = entrada.nextLine().trim();
+
+        System.out.print("Prioridad (Baja/Media/Alta): ");
+        String prioridad = entrada.nextLine().trim();
+
+
+        // Ninguno de los campos puede quedar vacio
+        if (codigo.isEmpty()
+                || descripcion.isEmpty()
+                || ubicacion.isEmpty()
+                || prioridad.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+
+        // Verificamos que la prioridad sea una de las permitidas
+        if (!gestion.prioridadValida(prioridad)) {
+
+            System.out.println("Prioridad no valida.");
+            System.out.println("Prioridades permitidas:");
+            System.out.println("- Baja");
+            System.out.println("- Media");
+            System.out.println("- Alta");
+
+            return;
+        }
+
+
+        // Creamos el objeto Rescate con los datos ingresados
+        // El estado "Activo" se asigna automaticamente
+        // dentro del constructor de Rescate
+        Rescate nuevoRescate =
+                new Rescate(
+                        codigo,
+                        descripcion,
+                        ubicacion,
+                        prioridad
+                );
+
+
+        boolean registrado =
+                gestion.registrarRescate(nuevoRescate);
+
+        if (registrado) {
+
+            System.out.println("Rescate registrado correctamente.");
+            System.out.println("Estado inicial: Activo");
+
+        } else {
+
+            System.out.println(
+                    "No se pudo registrar. "
+                    + "El codigo ya existe o no hay espacio disponible."
+            );
+        }
+    }
+    
+    // =========================
+    // CAMBIAR PRIORIDAD
+    // =========================
+
+    public static void cambiarPrioridadRescate(
+            Scanner entrada,
+            GestionRescate gestion) {
+
+        System.out.println("\n=== CAMBIAR PRIORIDAD ===");
+
+        System.out.print("Codigo del rescate: ");
+        String codigo = entrada.nextLine().trim();
+
+        System.out.print("Nueva prioridad (Baja/Media/Alta): ");
+        String nuevaPrioridad = entrada.nextLine().trim();
+
+
+        if (codigo.isEmpty() || nuevaPrioridad.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+
+        if (!gestion.prioridadValida(nuevaPrioridad)) {
+
+            System.out.println("Prioridad no valida.");
+            System.out.println("Debe ser Baja, Media o Alta.");
+            return;
+        }
+
+
+        if (gestion.cambiarPrioridad(codigo, nuevaPrioridad)) {
+
+            System.out.println("Prioridad actualizada correctamente.");
+
+        } else {
+
+            System.out.println("Rescate no encontrado.");
+        }
+    }
+    
+    // =========================
+    // ATENDER RESCATE
+    // =========================
+
+    public static void atenderRescate(
+            Scanner entrada,
+            GestionRescate gestion) {
+
+        System.out.println("\n=== ATENDER RESCATE ===");
+
+        System.out.print("Codigo del rescate: ");
+        String codigo = entrada.nextLine().trim();
+
+        if (codigo.isEmpty()) {
+
+            System.out.println("Debe ingresar un codigo.");
+            return;
+        }
+
+
+        if (gestion.atenderRescate(codigo)) {
+
+            // No eliminamos el rescate.
+            // GestionRescate cambia su estado de Activo a Atendido
+            System.out.println("Rescate atendido correctamente.");
+
+        } else {
+
+            System.out.println("Rescate no encontrado.");
         }
     }
 }
