@@ -13,10 +13,15 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner entrada = new Scanner(System.in);
-
+        
         GestionAnimales gestionAnimales = new GestionAnimales();
         GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
-
+        GestionSolicitudes gestionSolicitudes = new GestionSolicitudes();
+        
+        // Cada gestor administra su propio arreglo estatico:
+        // GestionAnimales     -> Animal[]
+        // GestionAdoptantes   -> Adoptante[]
+        // GestionSolicitudes  -> Solicitud[]
         int opcion = 0;
 
         do {
@@ -24,7 +29,8 @@ public class Main {
             System.out.println("\n=== CENTRO DE RESCATE ANIMAL ===");
             System.out.println("1. Gestion de animales");
             System.out.println("2. Gestion de adoptantes");
-            System.out.println("3. Salir");
+            System.out.println("3. Gestion de Solicitudes");
+            System.out.println("4. Salir");
             System.out.print("Seleccione una opcion: ");
 
             try {
@@ -41,10 +47,13 @@ public class Main {
                         menuAdoptantes(entrada, gestionAdoptantes);
                         break;
 
-                    case 3: //Salir
+                    case 3: //Gestionar Solicitued
+                        menuSolicitudes(entrada,gestionSolicitudes,gestionAnimales,gestionAdoptantes);
+                        break;
+                    case 4: //Salir
                         System.out.println("Saliendo del sistema...");
                         break;
-
+                        
                     default: //No valida
                         System.out.println("Opcion no valida.");
                         break;
@@ -55,7 +64,7 @@ public class Main {
                 System.out.println("Debe ingresar un numero.");
             }
 
-        } while (opcion != 3); // Repetir mientras sea distinta a 3
+        } while (opcion != 4); // Repetir mientras sea distinta a 3
 
         entrada.close();
     }
@@ -436,7 +445,7 @@ public class Main {
         }
     }
 
-
+    // Buscar Adoptante
     public static void buscarAdoptante(
             Scanner entrada,
             GestionAdoptantes gestion) {
@@ -495,7 +504,7 @@ public class Main {
         }
     }
 
-
+    // Editar adoptante
     public static void editarAdoptante(
             Scanner entrada,
             GestionAdoptantes gestion) {
@@ -538,6 +547,209 @@ public class Main {
         } else {
 
             System.out.println("Adoptante no encontrado.");
+        }
+    }
+    
+    // =========================
+    // MENU DE SOLICITUDES
+    // =========================
+
+    public static void menuSolicitudes(
+            Scanner entrada,
+            GestionSolicitudes gestionSolicitudes,
+            GestionAnimales gestionAnimales,
+            GestionAdoptantes gestionAdoptantes) {
+
+        int opcion = 0;
+
+        do {
+
+            System.out.println("\n=== GESTION DE SOLICITUDES ===");
+            System.out.println("1. Registrar solicitud");
+            System.out.println("2. Listar solicitudes pendientes");
+            System.out.println("3. Cambiar estado de solicitud");
+            System.out.println("4. Ver historial");
+            System.out.println("5. Regresar");
+            System.out.print("Seleccione una opcion: ");
+
+            try {
+
+                opcion = Integer.parseInt(entrada.nextLine());
+
+                switch (opcion) {
+
+                    case 1:
+                        registrarSolicitud(
+                                entrada,
+                                gestionSolicitudes,
+                                gestionAnimales,
+                                gestionAdoptantes
+                        );
+                        break;
+
+                    case 2:
+                        gestionSolicitudes.listarPendientes();
+                        break;
+
+                    case 3:
+                        cambiarEstadoSolicitud(
+                                entrada,
+                                gestionSolicitudes
+                        );
+                        break;
+
+                    case 4:
+                        gestionSolicitudes.mostrarHistorial();
+                        break;
+
+                    case 5:
+                        System.out.println(
+                                "Regresando al menu principal..."
+                        );
+                        break;
+
+                    default:
+                        System.out.println("Opcion no valida.");
+                        break;
+                }
+
+            } catch (NumberFormatException e) {
+
+                // Evitamos que el programa se caiga si escriben texto
+                // donde deberia ir una opcion numerica
+                System.out.println("Debe ingresar un numero.");
+            }
+
+        } while (opcion != 5);
+    }
+    
+    //Registrar solicitud
+    public static void registrarSolicitud(Scanner entrada,GestionSolicitudes gestionSolicitudes,GestionAnimales gestionAnimales,GestionAdoptantes gestionAdoptantes) {
+
+        System.out.println("\n=== REGISTRAR SOLICITUD ===");
+
+        System.out.print("Codigo de la solicitud: ");
+        String codigoSolicitud = entrada.nextLine().trim();
+
+        System.out.print("Codigo del adoptante: ");
+        String codigoAdoptante = entrada.nextLine().trim();
+
+        System.out.print("Codigo del animal: ");
+        String codigoAnimal = entrada.nextLine().trim();
+
+        // Ninguno de los tres codigos puede quedar vacio
+        if (codigoSolicitud.isEmpty()
+                || codigoAdoptante.isEmpty()
+                || codigoAnimal.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+
+        // Buscamos al adoptante dentro del arreglo de GestionAdoptantes
+        Adoptante adoptante =
+                gestionAdoptantes.buscarPorCodigo(codigoAdoptante);
+
+        if (adoptante == null) {
+
+            // Si devuelve null significa que no existe
+            // un adoptante activo con ese codigo
+            System.out.println("El adoptante no existe.");
+            return;
+        }
+
+
+        // Buscamos al animal dentro del arreglo de GestionAnimales
+        Animal animal =
+                gestionAnimales.buscarPorCodigo(codigoAnimal);
+
+        if (animal == null) {
+
+            // No permitimos crear una solicitud para
+            // un animal que no existe en nuestro sistema
+            System.out.println("El animal no existe.");
+            return;
+        }
+
+
+        // Ya comprobamos que ambos objetos existen
+        // Ahora creamos la solicitud relacionando esos objetos
+        Solicitud nuevaSolicitud =
+                new Solicitud(
+                        codigoSolicitud,
+                        adoptante,
+                        animal
+                );
+
+
+        boolean registrada =
+                gestionSolicitudes.registrarSolicitud(nuevaSolicitud);
+
+        if (registrada) {
+
+            System.out.println("Solicitud registrada correctamente.");
+            System.out.println("Estado inicial: Pendiente");
+
+        } else {
+
+            System.out.println(
+                    "No se pudo registrar. "
+                    + "El codigo ya existe o no hay espacio disponible."
+            );
+        }
+    } //Explicacion del bloque pa la defensa XD: Antes de registrar una solicitud busco al adoptante y al animal en sus respectivos gestores. Si alguno no existe, cancelo el registro. Si ambos existen, la solicitud guarda referencias a esos objetos.
+    
+    //Cambiar estado del la solicitud
+    public static void cambiarEstadoSolicitud(
+        Scanner entrada,
+        GestionSolicitudes gestion) {
+
+        System.out.println("\n=== CAMBIAR ESTADO DE SOLICITUD ===");
+
+        System.out.print("Codigo de la solicitud: ");
+        String codigo = entrada.nextLine().trim();
+
+        System.out.print(
+                "Nuevo estado (Pendiente/Aprobada/Rechazada): "
+        );
+
+        String nuevoEstado = entrada.nextLine().trim();
+
+
+        if (codigo.isEmpty() || nuevoEstado.isEmpty()) {
+
+            System.out.println("Los campos no pueden estar vacios.");
+            return;
+        }
+
+
+        // Comprobamos que solamente se utilicen
+        // los estados definidos para las solicitudes
+        if (!gestion.estadoValido(nuevoEstado)) {
+
+            System.out.println("Estado no valido.");
+            System.out.println("Estados permitidos:");
+            System.out.println("- Pendiente");
+            System.out.println("- Aprobada");
+            System.out.println("- Rechazada");
+
+            return;
+        }
+
+
+        boolean cambiado =
+                gestion.cambiarEstado(codigo, nuevoEstado);
+
+        if (cambiado) {
+
+            System.out.println(
+                    "Estado de la solicitud actualizado correctamente."
+            );
+
+        } else {
+
+            System.out.println("Solicitud no encontrada.");
         }
     }
 }
