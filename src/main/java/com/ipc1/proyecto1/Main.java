@@ -15,11 +15,19 @@ public class Main {
         Scanner entrada = new Scanner(System.in);
         
         GestionAnimales gestionAnimales = new GestionAnimales();
-        GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
-        GestionSolicitudes gestionSolicitudes = new GestionSolicitudes();
-        GestionRescate gestionRescate = new GestionRescate();
-        GestionUbicaciones gestionUbicaciones = new GestionUbicaciones();
+        PersistenciaAnimales.cargarAnimales(gestionAnimales);
 
+        GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
+        PersistenciaAdoptantes.cargarAdoptantes(gestionAdoptantes);
+
+        GestionSolicitudes gestionSolicitudes = new GestionSolicitudes();
+        PersistenciaSolicitudes.cargarSolicitudes(gestionSolicitudes,gestionAdoptantes,gestionAnimales);
+
+        GestionRescate gestionRescate = new GestionRescate();
+
+        PersistenciaRescate.cargarRescates(gestionRescate);
+        // Recupera los rescates guardados al iniciar el programa
+        GestionUbicaciones gestionUbicaciones = new GestionUbicaciones();
 
         
         // Cada gestor administra su propio arreglo estatico:
@@ -68,6 +76,18 @@ public class Main {
                         break;
                         
                     case 6: //Salir
+                        
+                        PersistenciaAnimales.guardarAnimales(gestionAnimales);
+                        // Guarda el estado actual de los animales antes de cerrar el programa
+                        
+                        PersistenciaAdoptantes.guardarAdoptantes(gestionAdoptantes);
+                        // Guarda los adoptantes antes de cerrar
+                        
+                        PersistenciaSolicitudes.guardarSolicitudes(gestionSolicitudes);
+                        
+                        PersistenciaRescate.guardarRescates(gestionRescate);
+                        // Guarda los rescates antes de cerrar
+                        
                         System.out.println("Saliendo del sistema...");
                         break;
                         

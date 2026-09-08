@@ -170,4 +170,14 @@ public class GestionSolicitudes {
                 + solicitud.getEstado()
         );
     }
+    
+    // Devuelve el arreglo para poder guardarlo en el archivo
+    public Solicitud[] getSolicitudes() {
+        return solicitudes;
+    }
+
+    // Devuelve cuantos espacios del arreglo se estan usando
+    public int getCantidadSolicitudes() {
+        return cantidadSolicitudes;
+    }
 }

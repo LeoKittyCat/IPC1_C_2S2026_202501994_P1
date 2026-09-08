@@ -190,4 +190,14 @@ public class GestionAnimales {
                 || estado.equalsIgnoreCase("Adoptado");
                 
     }
+    
+    // Devuelve el arreglo para poder guardarlo en el archivo
+    public Animal[] getAnimales() {
+        return animales;
+    }
+
+    // Devuelve cuantos espacios del arreglo se estan usando
+    public int getCantidadAnimales() {
+        return cantidadAnimales;
+    }
 } //fin del metodo

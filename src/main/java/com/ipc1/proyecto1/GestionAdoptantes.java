@@ -151,4 +151,14 @@ public class GestionAdoptantes {
                 + adoptante.getCorreo()
         );
     }
+    
+        // Devuelve el arreglo para poder guardarlo en el archivo
+        public Adoptante[] getAdoptantes() {
+            return adoptantes;
+        }
+
+        // Devuelve cuantos espacios del arreglo se estan usando
+        public int getCantidadAdoptantes() {
+            return cantidadAdoptantes;
+        }
 }

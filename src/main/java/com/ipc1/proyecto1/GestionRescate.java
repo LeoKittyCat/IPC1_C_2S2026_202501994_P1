@@ -205,4 +205,14 @@ public class GestionRescate {
                 + "Estado: " + rescate.getEstado()
         );
     }
+    
+    // Devuelve el arreglo para poder guardarlo en el archivo
+    public Rescate[] getRescates() {
+        return rescates;
+    }
+
+    // Devuelve cuantos espacios del arreglo se estan usando
+    public int getCantidadRescates() {
+        return cantidadRescates;
+    }
 }
