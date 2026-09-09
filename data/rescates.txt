@@ -1,1 +1,2 @@
 R001;Perro herido;zona 7 mixco;media;Atendido
+R002;Gato abandonado;Mi casa equisde;Alta;Atendido

@@ -1,1 +1,1 @@
-A456;A002;A004;Pendiente
+A456;A002;A004;Aprobada

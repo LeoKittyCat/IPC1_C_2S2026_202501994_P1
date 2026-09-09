@@ -17,6 +17,8 @@ public class LoginFrame extends JFrame {
     private GestionUsuarios gestionUsuarios;
     private GestionAnimales gestionAnimales;
     private GestionAdoptantes gestionAdoptantes;
+    private GestionSolicitudes gestionSolicitudes;
+    private GestionRescate gestionRescate;
 
     // =========================
     // CONSTRUCTOR
@@ -24,12 +26,16 @@ public class LoginFrame extends JFrame {
 
     public LoginFrame(GestionUsuarios gestionUsuarios, 
             GestionAnimales gestionAnimales,
-            GestionAdoptantes gestionAdoptantes) {
+            GestionAdoptantes gestionAdoptantes,
+            GestionSolicitudes gestionSolicitudes,
+            GestionRescate gestionRescate) {
 
         // Guarda el gestor que ya tiene los usuarios (y animales) cargados desde el archivo
         this.gestionUsuarios = gestionUsuarios;
         this.gestionAnimales = gestionAnimales;
         this.gestionAdoptantes = gestionAdoptantes;
+        this.gestionSolicitudes = gestionSolicitudes;
+        this.gestionRescate = gestionRescate;
         
         // Configuracion general de la ventana
         setTitle("Centro de Rescate Animal - Login");
@@ -136,7 +142,9 @@ public class LoginFrame extends JFrame {
         new VentanaPrincipal(
                 encontrado,
                 gestionAnimales,
-                gestionAdoptantes
+                gestionAdoptantes,
+                gestionSolicitudes,
+                gestionRescate
         );
 
             ventana.setVisible(true);
@@ -167,12 +175,20 @@ public class LoginFrame extends JFrame {
         
         GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
         PersistenciaAdoptantes.cargarAdoptantes(gestionAdoptantes);
+        
+        GestionSolicitudes gestionSolicitudes =new GestionSolicitudes();
+        PersistenciaSolicitudes.cargarSolicitudes(gestionSolicitudes,gestionAdoptantes,gestionAnimales);
+        
+        GestionRescate gestionRescate = new GestionRescate();
+        PersistenciaRescate.cargarRescates(gestionRescate);
 
         LoginFrame login =
         new LoginFrame(
                 gestionUsuarios,
                 gestionAnimales,
-                gestionAdoptantes
+                gestionAdoptantes,
+                gestionSolicitudes,
+                gestionRescate
         );
 
         login.setVisible(true);

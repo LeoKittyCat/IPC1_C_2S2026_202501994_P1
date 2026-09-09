@@ -10,7 +10,9 @@ public class VentanaPrincipal extends JFrame {
     private Usuario usuarioActual;
     private GestionAnimales gestionAnimales;
     private GestionAdoptantes gestionAdoptantes;
-
+    private GestionSolicitudes gestionSolicitudes;
+    private GestionRescate gestionRescate;
+    
     private JButton btnAnimales;
     private JButton btnAdoptantes;
     private JButton btnSolicitudes;
@@ -24,14 +26,19 @@ public class VentanaPrincipal extends JFrame {
     // CONSTRUCTOR
     // =========================
 
-public VentanaPrincipal(Usuario usuarioActual,
+public VentanaPrincipal(
+        Usuario usuarioActual,
         GestionAnimales gestionAnimales,
-        GestionAdoptantes gestionAdoptantes) {
+        GestionAdoptantes gestionAdoptantes,
+        GestionSolicitudes gestionSolicitudes,
+        GestionRescate gestionRescate) {
 
         this.usuarioActual = usuarioActual;
         this.gestionAnimales = gestionAnimales;
         this.gestionAdoptantes = gestionAdoptantes;
-        // Guarda el usuario (y animal...y adoptantes) que inicio sesion para poder mostrar su nombre y rol
+        this.gestionSolicitudes = gestionSolicitudes;
+        this.gestionRescate = gestionRescate;
+        // Guarda el usuario (y animal...y adoptantes y aja) que inicio sesion para poder mostrar su nombre y rol
 
         setTitle("Centro de Rescate Animal");
 
@@ -136,26 +143,48 @@ public VentanaPrincipal(Usuario usuarioActual,
 
         btnAdoptantes.addActionListener(e -> {
 
-        // Oculta el menu principal mientras esta abierto el modulo
-        setVisible(false);
+            // Oculta el menu principal mientras esta abierto el modulo
+            setVisible(false);
 
-        VentanaAdoptantes ventanaAdoptantes =
-                new VentanaAdoptantes(
-                        gestionAdoptantes,
-                        this
-                );
+            VentanaAdoptantes ventanaAdoptantes =
+                    new VentanaAdoptantes(
+                            gestionAdoptantes,
+                            this
+                    );
 
-        ventanaAdoptantes.setVisible(true);
-    });
+            ventanaAdoptantes.setVisible(true);
+        });
 
 
         btnSolicitudes.addActionListener(e -> {
-            System.out.println("Abrir modulo de solicitudes");
+
+            // Oculta el menu principal mientras esta abierto el modulo
+            setVisible(false);
+
+            VentanaSolicitudes ventanaSolicitudes =
+                    new VentanaSolicitudes(
+                            gestionSolicitudes,
+                            gestionAdoptantes,
+                            gestionAnimales,
+                            this
+                    );
+
+            ventanaSolicitudes.setVisible(true);
         });
 
 
         btnRescates.addActionListener(e -> {
-            System.out.println("Abrir modulo de rescates");
+
+            // Oculta el menu principal mientras esta abierto el modulo
+            setVisible(false);
+
+            VentanaRescates ventanaRescates =
+                    new VentanaRescates(
+                            gestionRescate,
+                            this
+                    );
+
+            ventanaRescates.setVisible(true);
         });
 
 
