@@ -66,6 +66,11 @@ public class PersistenciaUsuarios {
 
             escritor.write("auxiliar;aux123;Auxiliar");
             escritor.newLine();
+            
+            escritor.write("sans;undertale;eeeeeee");
+            escritor.newLine();
+            
+            // usuario; contraseña; rol
 
         } catch (IOException e) {
 
@@ -96,7 +101,8 @@ public class PersistenciaUsuarios {
                 String[] datos = linea.split(";");
 
                 if (datos.length == 3) {
-
+                    
+                    //Aqui le asignamos la posicion al formato usuario;contraseña;rol
                     String usuario = datos[0];
                     String contrasena = datos[1];
                     String rol = datos[2];

@@ -197,4 +197,38 @@ public class GestionUbicaciones {
 
         return false;
     }
+    
+    // Devuelve la matriz para poder mostrarla en Swing
+    // Permite que la ventana visual esa que creamos pueda consultar la tabla visual para mostrarla
+    public EspacioRefugio[][] getEspacios() {
+        return espacios;
+    }
+    
+    // =========================
+    // LIBERAR ANIMAL
+    // =========================
+
+    public boolean liberarAnimal(Animal animal) {
+
+        // Recorre toda la matriz buscando al mismo objeto Animal
+        for (int fila = 0; fila < espacios.length; fila++) {
+
+            for (int columna = 0;
+                    columna < espacios[fila].length;
+                    columna++) {
+
+                if (!espacios[fila][columna].estaDisponible()
+                        && espacios[fila][columna].getAnimal() == animal) {
+
+                    // null deja libre el espacio donde estaba el animal
+                    espacios[fila][columna].setAnimal(null);
+
+                    return true;
+                }
+            }
+        }
+
+        // Devuelve false si el animal no estaba asignado a ningun espacio
+        return false;
+    }
 }

@@ -18,6 +18,7 @@ public class VentanaSolicitudes extends JFrame {
     private GestionAdoptantes gestionAdoptantes;
     private GestionAnimales gestionAnimales;
     private VentanaPrincipal ventanaPrincipal;
+    private GestionUbicaciones gestionUbicaciones;
 
     private JTextField txtCodigo;
     private JTextField txtCodigoAdoptante;
@@ -37,12 +38,14 @@ public class VentanaSolicitudes extends JFrame {
             GestionSolicitudes gestion,
             GestionAdoptantes gestionAdoptantes,
             GestionAnimales gestionAnimales,
+            GestionUbicaciones gestionUbicaciones,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa los mismos gestores que ya contienen los datos cargados
         this.gestion = gestion;
         this.gestionAdoptantes = gestionAdoptantes;
         this.gestionAnimales = gestionAnimales;
+        this.gestionUbicaciones = gestionUbicaciones;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;

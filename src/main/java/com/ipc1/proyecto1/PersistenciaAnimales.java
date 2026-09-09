@@ -4,14 +4,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileWriter; // Esto sirve para crear animales.txt si no existe
 import java.io.IOException;
 
 public class PersistenciaAnimales {
 
     // Ruta relativa para que funcione aunque el proyecto cambie de computadora
-    private static final String CARPETA = "data";
-    private static final String ARCHIVO = "data/animales.txt";
+    private static final String CARPETA = "data"; //Crea carpetas
+    private static final String ARCHIVO = "data/animales.txt";  //Crea el .txt con la info...bueno no
 
 
     // =========================
@@ -20,7 +20,7 @@ public class PersistenciaAnimales {
 
     public static void prepararArchivo() {
 
-        // Representa la carpeta data
+        // Representa la carpeta data, la crea
         File carpeta = new File(CARPETA);
 
         // Si la carpeta todavia no existe la crea
@@ -57,7 +57,7 @@ public class PersistenciaAnimales {
         try (
             // FileWriter abre el archivo y BufferedWriter permite escribir en el
             BufferedWriter escritor =
-                    new BufferedWriter(new FileWriter(ARCHIVO))
+                    new BufferedWriter(new FileWriter(ARCHIVO)) //Aqui SI crea el archivo xd
         ) {
 
             Animal[] animales = gestion.getAnimales();
@@ -70,6 +70,7 @@ public class PersistenciaAnimales {
 
                 // Guarda cada dato separado por ;
                 // Tambien guarda activo para conservar la eliminacion logica
+                // Guarda cada animal y su codigo y especie y aaaaaa!
                 escritor.write(
                         animal.getCodigo() + ";"
                         + animal.getNombre() + ";"
@@ -153,3 +154,8 @@ public class PersistenciaAnimales {
         }
     }
 }
+
+
+// Pa que se me quede: new File("data"); crea una carpeta
+// new FileWriter("data/animales.txt") abre o crea el archivo
+//esccritor.write(...) escribe los datos

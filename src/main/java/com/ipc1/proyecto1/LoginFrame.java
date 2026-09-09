@@ -19,6 +19,7 @@ public class LoginFrame extends JFrame {
     private GestionAdoptantes gestionAdoptantes;
     private GestionSolicitudes gestionSolicitudes;
     private GestionRescate gestionRescate;
+    private GestionUbicaciones gestionUbicaciones;
 
     // =========================
     // CONSTRUCTOR
@@ -28,7 +29,8 @@ public class LoginFrame extends JFrame {
             GestionAnimales gestionAnimales,
             GestionAdoptantes gestionAdoptantes,
             GestionSolicitudes gestionSolicitudes,
-            GestionRescate gestionRescate) {
+            GestionRescate gestionRescate,
+            GestionUbicaciones gestionUbicaciones) {
 
         // Guarda el gestor que ya tiene los usuarios (y animales) cargados desde el archivo
         this.gestionUsuarios = gestionUsuarios;
@@ -36,6 +38,7 @@ public class LoginFrame extends JFrame {
         this.gestionAdoptantes = gestionAdoptantes;
         this.gestionSolicitudes = gestionSolicitudes;
         this.gestionRescate = gestionRescate;
+        this.gestionUbicaciones = gestionUbicaciones;
         
         // Configuracion general de la ventana
         setTitle("Centro de Rescate Animal - Login");
@@ -119,7 +122,9 @@ public class LoginFrame extends JFrame {
         }
 
 
-        // Usa exactamente la misma logica que ya funcionaba en terminal
+        // Busca dentro del arreglo cargado desde usuarios.txt 
+        // Si encuentra coincidencia devuelve el objeto Usuario
+        // Ese objeto se manda a ventanaPrincipal
         Usuario encontrado =
                 gestionUsuarios.iniciarSesion(
                         usuario,
@@ -138,14 +143,15 @@ public class LoginFrame extends JFrame {
             );
 
 
-            VentanaPrincipal ventana =
-        new VentanaPrincipal(
-                encontrado,
-                gestionAnimales,
-                gestionAdoptantes,
-                gestionSolicitudes,
-                gestionRescate
-        );
+        VentanaPrincipal ventana =
+                new VentanaPrincipal(
+                        encontrado,
+                        gestionAnimales,
+                        gestionAdoptantes,
+                        gestionSolicitudes,
+                        gestionRescate,
+                        gestionUbicaciones
+                );
 
             ventana.setVisible(true);
             // Abre la ventana principal usando el usuario que inicio sesion
@@ -165,32 +171,38 @@ public class LoginFrame extends JFrame {
         }
     }
     
-    public static void main(String[] args) {
+        public static void main(String[] args) {
 
-        GestionUsuarios gestionUsuarios = new GestionUsuarios();
-        PersistenciaUsuarios.cargarUsuarios(gestionUsuarios);
+            GestionUsuarios gestionUsuarios =new GestionUsuarios();
+            PersistenciaUsuarios.cargarUsuarios(gestionUsuarios);
 
-        GestionAnimales gestionAnimales = new GestionAnimales();
-        PersistenciaAnimales.cargarAnimales(gestionAnimales);
-        
-        GestionAdoptantes gestionAdoptantes = new GestionAdoptantes();
-        PersistenciaAdoptantes.cargarAdoptantes(gestionAdoptantes);
-        
-        GestionSolicitudes gestionSolicitudes =new GestionSolicitudes();
-        PersistenciaSolicitudes.cargarSolicitudes(gestionSolicitudes,gestionAdoptantes,gestionAnimales);
-        
-        GestionRescate gestionRescate = new GestionRescate();
-        PersistenciaRescate.cargarRescates(gestionRescate);
+            GestionAnimales gestionAnimales =new GestionAnimales();
+            PersistenciaAnimales.cargarAnimales(gestionAnimales);
 
-        LoginFrame login =
-        new LoginFrame(
-                gestionUsuarios,
-                gestionAnimales,
-                gestionAdoptantes,
-                gestionSolicitudes,
-                gestionRescate
-        );
+            // Animales va primero porque ubicaciones necesita buscar
+            // el codigo del animal que ya fue cargado
+            GestionUbicaciones gestionUbicaciones =new GestionUbicaciones();
+            PersistenciaUbicaciones.cargarUbicaciones(gestionUbicaciones,gestionAnimales);
 
-        login.setVisible(true);
-    }
+            GestionAdoptantes gestionAdoptantes =new GestionAdoptantes();
+            PersistenciaAdoptantes.cargarAdoptantes(gestionAdoptantes);
+
+            GestionSolicitudes gestionSolicitudes =new GestionSolicitudes();
+            PersistenciaSolicitudes.cargarSolicitudes(gestionSolicitudes,gestionAdoptantes,gestionAnimales);
+
+            GestionRescate gestionRescate =new GestionRescate();
+            PersistenciaRescate.cargarRescates(gestionRescate);
+
+            LoginFrame login =
+                    new LoginFrame(
+                            gestionUsuarios,
+                            gestionAnimales,
+                            gestionAdoptantes,
+                            gestionSolicitudes,
+                            gestionRescate,
+                            gestionUbicaciones
+                    );
+
+            login.setVisible(true);
+        }
 }

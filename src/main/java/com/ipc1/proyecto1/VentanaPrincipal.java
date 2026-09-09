@@ -12,6 +12,7 @@ public class VentanaPrincipal extends JFrame {
     private GestionAdoptantes gestionAdoptantes;
     private GestionSolicitudes gestionSolicitudes;
     private GestionRescate gestionRescate;
+    private GestionUbicaciones gestionUbicaciones;
     
     private JButton btnAnimales;
     private JButton btnAdoptantes;
@@ -26,18 +27,21 @@ public class VentanaPrincipal extends JFrame {
     // CONSTRUCTOR
     // =========================
 
+    
 public VentanaPrincipal(
-        Usuario usuarioActual,
+        Usuario usuarioActual, //Recibe el usuario encontrado
         GestionAnimales gestionAnimales,
         GestionAdoptantes gestionAdoptantes,
         GestionSolicitudes gestionSolicitudes,
-        GestionRescate gestionRescate) {
+        GestionRescate gestionRescate,
+        GestionUbicaciones gestionUbicaciones) {
 
         this.usuarioActual = usuarioActual;
         this.gestionAnimales = gestionAnimales;
         this.gestionAdoptantes = gestionAdoptantes;
         this.gestionSolicitudes = gestionSolicitudes;
         this.gestionRescate = gestionRescate;
+        this.gestionUbicaciones = gestionUbicaciones;
         // Guarda el usuario (y animal...y adoptantes y aja) que inicio sesion para poder mostrar su nombre y rol
 
         setTitle("Centro de Rescate Animal");
@@ -73,7 +77,7 @@ public VentanaPrincipal(
 
         panel.add(lblTitulo);
 
-
+        // Ya teniendo el usuario encontrado
         JLabel lblUsuario = new JLabel(
                 "Usuario: "
                 + usuarioActual.getUsuario()
@@ -162,12 +166,13 @@ public VentanaPrincipal(
             setVisible(false);
 
             VentanaSolicitudes ventanaSolicitudes =
-                    new VentanaSolicitudes(
-                            gestionSolicitudes,
-                            gestionAdoptantes,
-                            gestionAnimales,
-                            this
-                    );
+                new VentanaSolicitudes(
+                        gestionSolicitudes,
+                        gestionAdoptantes,
+                        gestionAnimales,
+                        gestionUbicaciones,
+                        this
+                );
 
             ventanaSolicitudes.setVisible(true);
         });
@@ -189,12 +194,37 @@ public VentanaPrincipal(
 
 
         btnUbicaciones.addActionListener(e -> {
-            System.out.println("Abrir modulo de ubicaciones");
+
+            // Oculta el menu principal mientras esta abierto el modulo
+            setVisible(false);
+
+            VentanaUbicaciones ventanaUbicaciones =
+                    new VentanaUbicaciones(
+                            gestionUbicaciones,
+                            gestionAnimales,
+                            this
+                    );
+
+            ventanaUbicaciones.setVisible(true);
         });
 
 
         btnReportes.addActionListener(e -> {
-            System.out.println("Abrir modulo de reportes");
+
+            // Oculta el menu principal mientras esta abierta la ventana de reportes
+            setVisible(false);
+
+            VentanaReportes ventanaReportes =
+                    new VentanaReportes(
+                            gestionAnimales,
+                            gestionAdoptantes,
+                            gestionSolicitudes,
+                            gestionRescate,
+                            gestionUbicaciones,
+                            this
+                    );
+
+            ventanaReportes.setVisible(true);
         });
 
 
