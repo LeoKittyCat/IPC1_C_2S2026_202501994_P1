@@ -13,6 +13,7 @@ public class VentanaPrincipal extends JFrame {
     private GestionSolicitudes gestionSolicitudes;
     private GestionRescate gestionRescate;
     private GestionUbicaciones gestionUbicaciones;
+    private GestionBitacora gestionBitacora;
     
     private JButton btnAnimales;
     private JButton btnAdoptantes;
@@ -34,7 +35,8 @@ public VentanaPrincipal(
         GestionAdoptantes gestionAdoptantes,
         GestionSolicitudes gestionSolicitudes,
         GestionRescate gestionRescate,
-        GestionUbicaciones gestionUbicaciones) {
+        GestionUbicaciones gestionUbicaciones,
+        GestionBitacora gestionBitacora) {
 
         this.usuarioActual = usuarioActual;
         this.gestionAnimales = gestionAnimales;

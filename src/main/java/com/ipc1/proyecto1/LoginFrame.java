@@ -14,6 +14,7 @@ public class LoginFrame extends JFrame {
     private JPasswordField txtContrasena;
     private JButton btnIngresar;
 
+    private GestionBitacora gestionBitacora;
     private GestionUsuarios gestionUsuarios;
     private GestionAnimales gestionAnimales;
     private GestionAdoptantes gestionAdoptantes;
@@ -30,7 +31,8 @@ public class LoginFrame extends JFrame {
             GestionAdoptantes gestionAdoptantes,
             GestionSolicitudes gestionSolicitudes,
             GestionRescate gestionRescate,
-            GestionUbicaciones gestionUbicaciones) {
+            GestionUbicaciones gestionUbicaciones,
+            GestionBitacora gestionBitacora) {
 
         // Guarda el gestor que ya tiene los usuarios (y animales) cargados desde el archivo
         this.gestionUsuarios = gestionUsuarios;
@@ -39,6 +41,7 @@ public class LoginFrame extends JFrame {
         this.gestionSolicitudes = gestionSolicitudes;
         this.gestionRescate = gestionRescate;
         this.gestionUbicaciones = gestionUbicaciones;
+        this.gestionBitacora = gestionBitacora;
         
         // Configuracion general de la ventana
         setTitle("Centro de Rescate Animal - Login");
@@ -141,7 +144,20 @@ public class LoginFrame extends JFrame {
                     + "\nRol: "
                     + encontrado.getRol()
             );
+        
+            // Guarda el inicio de sesion dentro de la bitacora
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Inicio de sesion",
+                            "El usuario inicio sesion correctamente",
+                            encontrado.getUsuario()
+                    )
+            );
 
+            // Actualiza bitacora.txt
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
         VentanaPrincipal ventana =
                 new VentanaPrincipal(
@@ -150,7 +166,8 @@ public class LoginFrame extends JFrame {
                         gestionAdoptantes,
                         gestionSolicitudes,
                         gestionRescate,
-                        gestionUbicaciones
+                        gestionUbicaciones,
+                        gestionBitacora
                 );
 
             ventana.setVisible(true);
@@ -203,7 +220,8 @@ public class LoginFrame extends JFrame {
                             gestionAdoptantes,
                             gestionSolicitudes,
                             gestionRescate,
-                            gestionUbicaciones
+                            gestionUbicaciones,
+                            gestionBitacora
                     );
 
             login.setVisible(true);

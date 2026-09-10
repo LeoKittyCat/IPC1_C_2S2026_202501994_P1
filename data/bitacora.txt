@@ -1,0 +1,2 @@
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Inicio de sesion;El usuario inicio sesion correctamente;sans

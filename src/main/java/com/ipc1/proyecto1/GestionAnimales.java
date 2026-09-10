@@ -123,7 +123,8 @@ public class GestionAnimales {
             
             animal.setEstado(nuevoEstado);
             //Modificamos el estado del mismo objeto que ya esta dentro del arreglo
-            return false;
+            return true;
+            // Antes lo tenia en return false XD
         }
         return false;
     }
