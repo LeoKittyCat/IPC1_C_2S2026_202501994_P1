@@ -228,14 +228,15 @@ public VentanaPrincipal(
             setVisible(false);
 
             VentanaReportes ventanaReportes =
-                    new VentanaReportes(
-                            gestionAnimales,
-                            gestionAdoptantes,
-                            gestionSolicitudes,
-                            gestionRescate,
-                            gestionUbicaciones,
-                            this
-                    );
+        new VentanaReportes(
+                gestionAnimales,
+                gestionAdoptantes,
+                gestionSolicitudes,
+                gestionRescate,
+                gestionUbicaciones,
+                gestionBitacora,
+                this
+        );
 
             ventanaReportes.setVisible(true);
         });

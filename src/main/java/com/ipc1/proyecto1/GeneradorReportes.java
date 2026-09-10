@@ -584,4 +584,81 @@ public class GeneradorReportes {
             return false;
         }
     }
+    // =========================
+    // REPORTE DE BITACORA
+    // =========================
+    
+    // Toma bitacora y convierte cada accion en una fila
+    public static boolean generarReporteBitacora(
+            GestionBitacora gestion) {
+
+        prepararCarpeta();
+
+        String archivo =
+                CARPETA + "/reporte_bitacora.html";
+
+
+        try (
+            BufferedWriter escritor =
+                    new BufferedWriter(
+                            new FileWriter(archivo)
+                    )
+        ) {
+
+            escritor.write(
+                    inicioHTML("Reporte de Bitacora")
+            );
+
+
+            escritor.write(
+                    "<table>\n"
+                    + "<tr>\n"
+                    + "<th>Accion</th>\n"
+                    + "<th>Detalle</th>\n"
+                    + "<th>Usuario</th>\n"
+                    + "</tr>\n"
+            );
+
+
+            Bitacora[] acciones =
+                    gestion.getAcciones();
+
+            int cantidad =
+                    gestion.getCantidadAcciones();
+
+
+            // Recorre todas las acciones guardadas en la bitacora
+            for (int i = 0; i < cantidad; i++) {
+
+                Bitacora accion =
+                        acciones[i];
+
+
+                escritor.write(
+                        "<tr>\n"
+                        + "<td>" + accion.getAccion() + "</td>\n"
+                        + "<td>" + accion.getDetalle() + "</td>\n"
+                        + "<td>" + accion.getUsuario() + "</td>\n"
+                        + "</tr>\n"
+                );
+            }
+
+
+            escritor.write("</table>\n");
+
+            escritor.write(finHTML());
+
+            return true;
+
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error al generar el reporte de bitacora"
+            );
+
+            return false;
+        }
+    }
+    
 }

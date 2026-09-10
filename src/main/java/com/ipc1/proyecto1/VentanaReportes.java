@@ -14,6 +14,7 @@ public class VentanaReportes extends JFrame {
     private GestionSolicitudes gestionSolicitudes;
     private GestionRescate gestionRescate;
     private GestionUbicaciones gestionUbicaciones;
+    private GestionBitacora gestionBitacora;
 
     private VentanaPrincipal ventanaPrincipal;
 
@@ -28,16 +29,18 @@ public class VentanaReportes extends JFrame {
             GestionSolicitudes gestionSolicitudes,
             GestionRescate gestionRescate,
             GestionUbicaciones gestionUbicaciones,
+            GestionBitacora gestionBitacora,
             VentanaPrincipal ventanaPrincipal) {
 
-        // Guarda los mismos gestores que ya tienen todos los datos cargados
         this.gestionAnimales = gestionAnimales;
         this.gestionAdoptantes = gestionAdoptantes;
         this.gestionSolicitudes = gestionSolicitudes;
         this.gestionRescate = gestionRescate;
         this.gestionUbicaciones = gestionUbicaciones;
 
-        // Guarda la ventana principal para poder regresar despues
+        // Esta seguramente es la que falta
+        this.gestionBitacora = gestionBitacora;
+
         this.ventanaPrincipal = ventanaPrincipal;
 
         setTitle("Reportes");
@@ -119,6 +122,12 @@ public class VentanaReportes extends JFrame {
 
         btnTodos.setBounds(320, 270, 190, 40);
         panel.add(btnTodos);
+        
+        JButton btnBitacora =
+        new JButton("Reporte de bitacora");
+
+        btnBitacora.setBounds(80, 330, 190, 40);
+        panel.add(btnBitacora);
 
 
         JButton btnRegresar =
@@ -131,7 +140,8 @@ public class VentanaReportes extends JFrame {
         // =========================
         // ACCIONES
         // =========================
-
+        btnBitacora.addActionListener(e -> generarBitacora());
+        
         btnAnimales.addActionListener(e -> generarAnimales());
 
         btnAdoptantes.addActionListener(e -> generarAdoptantes());
@@ -280,6 +290,11 @@ public class VentanaReportes extends JFrame {
     // =========================
 
     private void generarTodos() {
+        
+        boolean bitacora =
+        GeneradorReportes.generarReporteBitacora(
+                gestionBitacora
+        );
 
         boolean animales =
                 GeneradorReportes.generarReporteAnimales(
@@ -318,7 +333,8 @@ public class VentanaReportes extends JFrame {
             && solicitudes
             && rescates
             && ubicaciones
-            && adopciones) {
+            && adopciones
+                && bitacora) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -360,6 +376,29 @@ public class VentanaReportes extends JFrame {
             JOptionPane.showMessageDialog(
                     this,
                     "Reporte de adopciones generado correctamente"
+            );
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo generar el reporte"
+            );
+        }
+    }
+    
+    // =========================
+    // REPORTE DE BITACORA
+    // =========================
+
+    private void generarBitacora() {
+
+        if (GeneradorReportes.generarReporteBitacora(
+                gestionBitacora)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Reporte de bitacora generado correctamente"
             );
 
         } else {
