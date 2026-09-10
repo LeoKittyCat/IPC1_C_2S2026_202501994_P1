@@ -85,6 +85,12 @@ public class VentanaReportes extends JFrame {
 
         btnAdoptantes.setBounds(320, 90, 190, 40);
         panel.add(btnAdoptantes);
+        
+        JButton btnAdopciones =
+                new JButton("Reporte de adopciones");
+
+        btnAdopciones.setBounds(80, 270, 190, 40);
+        panel.add(btnAdopciones);
 
 
         JButton btnSolicitudes =
@@ -111,7 +117,7 @@ public class VentanaReportes extends JFrame {
         JButton btnTodos =
                 new JButton("Generar todos");
 
-        btnTodos.setBounds(320, 210, 190, 40);
+        btnTodos.setBounds(320, 270, 190, 40);
         panel.add(btnTodos);
 
 
@@ -129,6 +135,8 @@ public class VentanaReportes extends JFrame {
         btnAnimales.addActionListener(e -> generarAnimales());
 
         btnAdoptantes.addActionListener(e -> generarAdoptantes());
+        
+        btnAdopciones.addActionListener(e -> generarAdopciones());
 
         btnSolicitudes.addActionListener(e -> generarSolicitudes());
 
@@ -297,14 +305,20 @@ public class VentanaReportes extends JFrame {
                 GeneradorReportes.generarReporteUbicaciones(
                         gestionUbicaciones
                 );
+        
+        boolean adopciones =
+                GeneradorReportes.generarReporteAdopciones(
+                        gestionSolicitudes
+                );
 
 
         // Solo muestra correcto si todos los reportes pudieron generarse
         if (animales
-                && adoptantes
-                && solicitudes
-                && rescates
-                && ubicaciones) {
+            && adoptantes
+            && solicitudes
+            && rescates
+            && ubicaciones
+            && adopciones) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -332,5 +346,28 @@ public class VentanaReportes extends JFrame {
 
         // Cierra esta ventana
         dispose();
+    }
+    
+    // =========================
+    // REPORTE DE ADOPCIONES
+    // =========================
+
+    private void generarAdopciones() {
+
+        if (GeneradorReportes.generarReporteAdopciones(
+                gestionSolicitudes)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Reporte de adopciones generado correctamente"
+            );
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo generar el reporte"
+            );
+        }
     }
 }

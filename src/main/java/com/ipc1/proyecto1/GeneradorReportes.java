@@ -489,4 +489,99 @@ public class GeneradorReportes {
             return false;
         }
     }
+    
+    // =========================
+    // REPORTE DE ADOPCIONES
+    // =========================
+
+    public static boolean generarReporteAdopciones(
+            GestionSolicitudes gestion) {
+
+        prepararCarpeta();
+
+        String archivo =
+                CARPETA + "/reporte_adopciones.html";
+
+
+        try (
+            BufferedWriter escritor =
+                    new BufferedWriter(
+                            new FileWriter(archivo)
+                    )
+        ) {
+
+            escritor.write(
+                    inicioHTML("Reporte de Adopciones")
+            );
+
+
+            escritor.write(
+                    "<table>\n"
+                    + "<tr>\n"
+                    + "<th>Solicitud</th>\n"
+                    + "<th>Adoptante</th>\n"
+                    + "<th>Animal</th>\n"
+                    + "<th>Especie</th>\n"
+                    + "<th>Estado</th>\n"
+                    + "</tr>\n"
+            );
+
+
+            Solicitud[] solicitudes =
+                    gestion.getSolicitudes();
+
+            int cantidad =
+                    gestion.getCantidadSolicitudes();
+
+
+            for (int i = 0; i < cantidad; i++) {
+
+                Solicitud solicitud =
+                        solicitudes[i];
+
+
+                // Una solicitud aprobada representa una adopcion completada
+                if (solicitud.getEstado()
+                        .equalsIgnoreCase("Aprobada")) {
+
+
+                    escritor.write(
+                            "<tr>\n"
+                            + "<td>" + solicitud.getCodigo() + "</td>\n"
+                            + "<td>"
+                            + solicitud.getAdoptante().getCodigo()
+                            + " - "
+                            + solicitud.getAdoptante().getNombre()
+                            + "</td>\n"
+                            + "<td>"
+                            + solicitud.getAnimal().getCodigo()
+                            + " - "
+                            + solicitud.getAnimal().getNombre()
+                            + "</td>\n"
+                            + "<td>"
+                            + solicitud.getAnimal().getEspecie()
+                            + "</td>\n"
+                            + "<td>Adoptado</td>\n"
+                            + "</tr>\n"
+                    );
+                }
+            }
+
+
+            escritor.write("</table>\n");
+
+            escritor.write(finHTML());
+
+            return true;
+
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error al generar el reporte de adopciones"
+            );
+
+            return false;
+        }
+    }
 }

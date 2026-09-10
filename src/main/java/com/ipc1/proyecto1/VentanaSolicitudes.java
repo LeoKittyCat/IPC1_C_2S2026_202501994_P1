@@ -373,7 +373,7 @@ public class VentanaSolicitudes extends JFrame {
         String codigo =
                 txtCodigo.getText().trim();
 
-        String estado =
+        String nuevoEstado =
                 cmbEstado.getSelectedItem().toString();
 
 
@@ -388,22 +388,84 @@ public class VentanaSolicitudes extends JFrame {
         }
 
 
+        // Busca la solicitud completa antes de modificarla
+        Solicitud solicitud =
+                gestion.buscarPorCodigo(codigo);
+
+
+        if (solicitud == null) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Solicitud no encontrada"
+            );
+
+            return;
+        }
+
+
+        // Una solicitud aprobada ya representa una adopcion completada
+        // Evita regresar despues a Pendiente o Rechazada
+        if (solicitud.getEstado().equalsIgnoreCase("Aprobada")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Esta solicitud ya fue aprobada"
+            );
+
+            return;
+        }
+
+
         boolean cambiado =
                 gestion.cambiarEstado(
                         codigo,
-                        estado
+                        nuevoEstado
                 );
 
 
         if (cambiado) {
 
-            // Guarda el nuevo estado de la solicitud en el archivo
-            PersistenciaSolicitudes.guardarSolicitudes(gestion);
+            // Si se aprueba la solicitud el animal pasa oficialmente a Adoptado
+            if (nuevoEstado.equalsIgnoreCase("Aprobada")) {
+
+                Animal animal =
+                        solicitud.getAnimal();
+
+
+                // Usa el mismo metodo que ya existe en GestionAnimales
+                gestionAnimales.editarEstado(
+                        animal.getCodigo(),
+                        "Adoptado"
+                );
+
+
+                // Si estaba ubicado en el refugio libera su espacio
+                gestionUbicaciones.liberarAnimal(animal);
+
+
+                // Guarda todos los cambios relacionados con la adopcion
+                PersistenciaAnimales.guardarAnimales(
+                        gestionAnimales
+                );
+
+                PersistenciaUbicaciones.guardarUbicaciones(
+                        gestionUbicaciones
+                );
+            }
+
+
+            // Guarda el nuevo estado de la solicitud
+            PersistenciaSolicitudes.guardarSolicitudes(
+                    gestion
+            );
+
 
             JOptionPane.showMessageDialog(
                     this,
                     "Estado actualizado correctamente"
             );
+
 
             actualizarTabla();
 
@@ -411,7 +473,7 @@ public class VentanaSolicitudes extends JFrame {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Solicitud no encontrada"
+                    "No se pudo cambiar el estado"
             );
         }
     }
@@ -425,7 +487,8 @@ public class VentanaSolicitudes extends JFrame {
 
         // Limpia primero la tabla
         modeloTabla.setRowCount(0);
-
+        
+        // Obtiene la solicitud 
         Solicitud[] solicitudes =
                 gestion.getSolicitudes();
 
