@@ -192,6 +192,9 @@ public class LoginFrame extends JFrame {
 
             GestionRescate gestionRescate =new GestionRescate();
             PersistenciaRescate.cargarRescates(gestionRescate);
+            
+            GestionBitacora gestionBitacora =new GestionBitacora();
+            PersistenciaBitacora.cargarBitacora(gestionBitacora);
 
             LoginFrame login =
                     new LoginFrame(
