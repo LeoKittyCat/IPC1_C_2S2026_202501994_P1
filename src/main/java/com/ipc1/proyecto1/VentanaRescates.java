@@ -16,6 +16,10 @@ public class VentanaRescates extends JFrame {
     // Declaro estos arriba pa que toda la clase pueda usarlos
     private GestionRescate gestion;
     private VentanaPrincipal ventanaPrincipal;
+    
+    // Bitacora
+    private GestionBitacora gestionBitacora;
+    private Usuario usuarioActual;
 
     private JTextField txtCodigo;
     private JTextField txtDescripcion;
@@ -33,10 +37,18 @@ public class VentanaRescates extends JFrame {
 
     public VentanaRescates(
             GestionRescate gestion,
+            GestionBitacora gestionBitacora,
+            Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa el mismo gestor que ya contiene los rescates cargados
         this.gestion = gestion;
+
+        // Guarda la bitacora para registrar las acciones
+        this.gestionBitacora = gestionBitacora;
+
+        // Guarda quien inicio sesion
+        this.usuarioActual = usuarioActual;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
@@ -314,6 +326,19 @@ public class VentanaRescates extends JFrame {
 
             // Guarda inmediatamente el rescate en rescates.txt
             PersistenciaRescate.guardarRescates(gestion);
+            
+            // Registra el nuevo rescate en la bitacora
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Registrar rescate",
+                            "Se registro el rescate " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -488,6 +513,19 @@ public class VentanaRescates extends JFrame {
 
             // Guarda el estado Atendido en el archivo
             PersistenciaRescate.guardarRescates(gestion);
+
+            // Registra que el rescate fue atendido
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Atender rescate",
+                            "Se atendio el rescate " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,

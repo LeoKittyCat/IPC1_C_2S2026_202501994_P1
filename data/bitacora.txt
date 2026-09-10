@@ -1,2 +1,6 @@
 Inicio de sesion;El usuario inicio sesion correctamente;sans
 Inicio de sesion;El usuario inicio sesion correctamente;sans
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Inicio de sesion;El usuario inicio sesion correctamente;admin
+Registrar animal;Se registro el animal AEIOU;admin
+Eliminar animal;Se elimino logicamente el animal AEIOU;admin

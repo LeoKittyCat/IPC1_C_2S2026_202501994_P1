@@ -44,6 +44,7 @@ public VentanaPrincipal(
         this.gestionSolicitudes = gestionSolicitudes;
         this.gestionRescate = gestionRescate;
         this.gestionUbicaciones = gestionUbicaciones;
+        this.gestionBitacora = gestionBitacora;
         // Guarda el usuario (y animal...y adoptantes y aja) que inicio sesion para poder mostrar su nombre y rol
 
         setTitle("Centro de Rescate Animal");
@@ -138,10 +139,12 @@ public VentanaPrincipal(
         setVisible(false);
 
         VentanaAnimales ventanaAnimales =
-                new VentanaAnimales(
-                        gestionAnimales,
-                        this
-                );
+            new VentanaAnimales(
+                    gestionAnimales,
+                    gestionBitacora,
+                    usuarioActual,
+                    this
+            );
 
         ventanaAnimales.setVisible(true);
     });
@@ -152,11 +155,13 @@ public VentanaPrincipal(
             // Oculta el menu principal mientras esta abierto el modulo
             setVisible(false);
 
-            VentanaAdoptantes ventanaAdoptantes =
-                    new VentanaAdoptantes(
-                            gestionAdoptantes,
-                            this
-                    );
+        VentanaAdoptantes ventanaAdoptantes =
+                new VentanaAdoptantes(
+                        gestionAdoptantes,
+                        gestionBitacora,
+                        usuarioActual,
+                        this
+                );
 
             ventanaAdoptantes.setVisible(true);
         });
@@ -167,12 +172,14 @@ public VentanaPrincipal(
             // Oculta el menu principal mientras esta abierto el modulo
             setVisible(false);
 
-            VentanaSolicitudes ventanaSolicitudes =
+        VentanaSolicitudes ventanaSolicitudes =
                 new VentanaSolicitudes(
                         gestionSolicitudes,
                         gestionAdoptantes,
                         gestionAnimales,
                         gestionUbicaciones,
+                        gestionBitacora,
+                        usuarioActual,
                         this
                 );
 
@@ -185,13 +192,15 @@ public VentanaPrincipal(
             // Oculta el menu principal mientras esta abierto el modulo
             setVisible(false);
 
-            VentanaRescates ventanaRescates =
-                    new VentanaRescates(
-                            gestionRescate,
-                            this
-                    );
+        VentanaRescates ventanaRescates =
+                new VentanaRescates(
+                        gestionRescate,
+                        gestionBitacora,
+                        usuarioActual,
+                        this
+                );
 
-            ventanaRescates.setVisible(true);
+        ventanaRescates.setVisible(true);
         });
 
 
@@ -200,14 +209,16 @@ public VentanaPrincipal(
             // Oculta el menu principal mientras esta abierto el modulo
             setVisible(false);
 
-            VentanaUbicaciones ventanaUbicaciones =
-                    new VentanaUbicaciones(
-                            gestionUbicaciones,
-                            gestionAnimales,
-                            this
-                    );
+        VentanaUbicaciones ventanaUbicaciones =
+                new VentanaUbicaciones(
+                        gestionUbicaciones,
+                        gestionAnimales,
+                        gestionBitacora,
+                        usuarioActual,
+                        this
+                );
 
-            ventanaUbicaciones.setVisible(true);
+        ventanaUbicaciones.setVisible(true);
         });
 
 

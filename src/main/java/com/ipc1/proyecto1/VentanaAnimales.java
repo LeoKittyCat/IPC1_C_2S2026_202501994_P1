@@ -16,6 +16,10 @@ public class VentanaAnimales extends JFrame {
     // Decalramos todos estos arriba pa que toda la clase pueda usarla
     private GestionAnimales gestion;
     private VentanaPrincipal ventanaPrincipal;
+    
+    //Bitacora
+    private GestionBitacora gestionBitacora;
+    private Usuario usuarioActual;
 
     private JTextField txtCodigo;
     private JTextField txtNombre;
@@ -34,10 +38,18 @@ public class VentanaAnimales extends JFrame {
 
     public VentanaAnimales(
             GestionAnimales gestion,
+            GestionBitacora gestionBitacora,
+            Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa el mismo gestor que ya contiene los animales cargados
         this.gestion = gestion;
+
+        // Guarda el gestor de bitacora para registrar las acciones importantes
+        this.gestionBitacora = gestionBitacora;
+
+        // Guarda quien inicio sesion para saber quien hizo cada accion
+        this.usuarioActual = usuarioActual;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
@@ -336,6 +348,20 @@ public class VentanaAnimales extends JFrame {
 
                 // Guarda inmediatamente el cambio en animales.txt
                 PersistenciaAnimales.guardarAnimales(gestion);
+                
+                // Registra quien ingreso al animal (Bitacora)
+                gestionBitacora.registrarAccion(
+                        new Bitacora(
+                                "Registrar animal",
+                                "Se registro el animal " + codigo,
+                                usuarioActual.getUsuario()
+                        )
+                );
+
+                // Guarda inmediatamente la bitacora
+                PersistenciaBitacora.guardarBitacora(
+                        gestionBitacora
+                );
 
                 JOptionPane.showMessageDialog(
                         this,
@@ -451,6 +477,22 @@ public class VentanaAnimales extends JFrame {
 
             // Guarda el nuevo estado en el archivo
             PersistenciaAnimales.guardarAnimales(gestion);
+            
+            // Registra el cambio de estado del animal (bitacora)
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Editar estado animal",
+                            "Se cambio el estado del animal "
+                            + codigo
+                            + " a "
+                            + estado,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -508,6 +550,19 @@ public class VentanaAnimales extends JFrame {
 
             // Guarda activo=false dentro de animales.txt
             PersistenciaAnimales.guardarAnimales(gestion);
+            
+            // Registra la eliminacion logica del animal (bitacora)
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Eliminar animal",
+                            "Se elimino logicamente el animal " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,

@@ -15,6 +15,10 @@ public class VentanaAdoptantes extends JFrame {
     // Declaro estos arriba pa que toda la clase pueda usarlos
     private GestionAdoptantes gestion;
     private VentanaPrincipal ventanaPrincipal;
+    
+    //Variables de bitacora
+    private GestionBitacora gestionBitacora;
+    private Usuario usuarioActual;
 
     private JTextField txtCodigo;
     private JTextField txtNombre;
@@ -31,10 +35,18 @@ public class VentanaAdoptantes extends JFrame {
 
     public VentanaAdoptantes(
             GestionAdoptantes gestion,
+            GestionBitacora gestionBitacora,
+            Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa el mismo gestor que ya contiene los adoptantes cargados
         this.gestion = gestion;
+
+        // Guarda la bitacora para registrar las acciones
+        this.gestionBitacora = gestionBitacora;
+
+        // Guarda quien inicio sesion
+        this.usuarioActual = usuarioActual;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
@@ -295,6 +307,19 @@ public class VentanaAdoptantes extends JFrame {
 
             // Guarda inmediatamente el cambio en adoptantes.txt
             PersistenciaAdoptantes.guardarAdoptantes(gestion);
+            
+            // Registra quien ingreso al adoptante
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Registrar adoptante",
+                            "Se registro el adoptante " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -417,6 +442,19 @@ public class VentanaAdoptantes extends JFrame {
 
             // Guarda los nuevos datos en adoptantes.txt
             PersistenciaAdoptantes.guardarAdoptantes(gestion);
+            
+            // Registra la edicion del adoptante
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Editar adoptante",
+                            "Se editaron los datos del adoptante " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -474,6 +512,19 @@ public class VentanaAdoptantes extends JFrame {
 
             // Guarda activo=false dentro de adoptantes.txt
             PersistenciaAdoptantes.guardarAdoptantes(gestion);
+            
+            // Registra la eliminacion logica del adoptante
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Eliminar adoptante",
+                            "Se elimino logicamente el adoptante " + codigo,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,

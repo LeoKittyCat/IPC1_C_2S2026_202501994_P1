@@ -2,3 +2,6 @@ A001;Paco;Perro;45;Ingresado;true
 A004;Paco;Perro;3;Ingresado;true
 A444;Michi;Gato;56;Ingresado;true
 Perr0;Pato;Gato;69;Ingresado;true
+A000;Pacheco;Perro;33;Ingresado;true
+A006;Pacheco;Perro;33;Ingresado;false
+AEIOU;BOBINSKI;Gato;77;Ingresado;false

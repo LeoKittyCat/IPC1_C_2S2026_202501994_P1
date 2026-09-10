@@ -17,6 +17,8 @@ public class VentanaUbicaciones extends JFrame {
     private GestionUbicaciones gestion;
     private GestionAnimales gestionAnimales;
     private VentanaPrincipal ventanaPrincipal;
+    private GestionBitacora gestionBitacora;
+    private Usuario usuarioActual;
 
     private JTextField txtCodigoAnimal;
 
@@ -34,6 +36,8 @@ public class VentanaUbicaciones extends JFrame {
     public VentanaUbicaciones(
             GestionUbicaciones gestion,
             GestionAnimales gestionAnimales,
+            GestionBitacora gestionBitacora,
+            Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa la misma matriz que ya tiene GestionUbicaciones
@@ -41,6 +45,12 @@ public class VentanaUbicaciones extends JFrame {
 
         // Sirve para buscar el animal antes de asignarlo
         this.gestionAnimales = gestionAnimales;
+
+        // Guarda la bitacora
+        this.gestionBitacora = gestionBitacora;
+
+        // Guarda quien inicio sesion
+        this.usuarioActual = usuarioActual;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
@@ -365,16 +375,34 @@ public class VentanaUbicaciones extends JFrame {
             
             PersistenciaUbicaciones.guardarUbicaciones(gestion);
             // Guarda la matriz despues de asignar el animal
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Animal asignado correctamente"
+            
+            // Registra la asignacion del animal
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Asignar ubicacion",
+                            "Se asigno el animal "
+                            + codigo
+                            + " al area "
+                            + gestion.obtenerNombreArea(fila)
+                            + " espacio "
+                            + columna,
+                            usuarioActual.getUsuario()
+                    )
             );
 
-            actualizarTabla();
-            txtCodigoAnimal.setText("");
-        }
-    }
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Animal asignado correctamente"
+                        );
+
+                        actualizarTabla();
+                        txtCodigoAnimal.setText("");
+                    }
+                }
 
 
     // =========================
@@ -390,6 +418,19 @@ public class VentanaUbicaciones extends JFrame {
 
         int columna =
                 obtenerColumnaSeleccionada();
+        
+        // Guarda temporalmente el espacio antes de liberarlo
+        EspacioRefugio espacio =
+                gestion.getEspacios()[fila][columna];
+
+        String codigoAnimal = "";
+
+        if (!espacio.estaDisponible()) {
+
+            // Guardamos el codigo antes de que liberarEspacio ponga animal = null
+            codigoAnimal =
+                    espacio.getAnimal().getCodigo();
+        }
 
 
         if (gestion.liberarEspacio(
@@ -397,6 +438,24 @@ public class VentanaUbicaciones extends JFrame {
                 columna)) {
             PersistenciaUbicaciones.guardarUbicaciones(gestion);
             // Actualiza ubicaciones.txt despues de liberar el espacio
+            
+            // Registra que el animal dejo de ocupar ese espacio
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Liberar ubicacion",
+                            "Se libero el animal "
+                            + codigoAnimal
+                            + " del area "
+                            + gestion.obtenerNombreArea(fila)
+                            + " espacio "
+                            + columna,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
     
             // liberarEspacio pone animal = null en esta posicion
             JOptionPane.showMessageDialog(

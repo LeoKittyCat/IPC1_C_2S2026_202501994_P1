@@ -19,6 +19,10 @@ public class VentanaSolicitudes extends JFrame {
     private GestionAnimales gestionAnimales;
     private VentanaPrincipal ventanaPrincipal;
     private GestionUbicaciones gestionUbicaciones;
+    
+    // Bitacora
+    private GestionBitacora gestionBitacora;
+    private Usuario usuarioActual;
 
     private JTextField txtCodigo;
     private JTextField txtCodigoAdoptante;
@@ -39,6 +43,8 @@ public class VentanaSolicitudes extends JFrame {
             GestionAdoptantes gestionAdoptantes,
             GestionAnimales gestionAnimales,
             GestionUbicaciones gestionUbicaciones,
+            GestionBitacora gestionBitacora,
+            Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
 
         // Usa los mismos gestores que ya contienen los datos cargados
@@ -46,6 +52,12 @@ public class VentanaSolicitudes extends JFrame {
         this.gestionAdoptantes = gestionAdoptantes;
         this.gestionAnimales = gestionAnimales;
         this.gestionUbicaciones = gestionUbicaciones;
+
+        // Guarda la bitacora para registrar las acciones
+        this.gestionBitacora = gestionBitacora;
+
+        // Guarda quien inicio sesion
+        this.usuarioActual = usuarioActual;
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
@@ -345,6 +357,22 @@ public class VentanaSolicitudes extends JFrame {
 
             // La solicitud comienza como Pendiente desde su constructor
             PersistenciaSolicitudes.guardarSolicitudes(gestion);
+            
+            // Registra la nueva solicitud en la bitacora
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Registrar solicitud",
+                            "Se registro la solicitud "
+                            + codigo
+                            + " para el animal "
+                            + codigoAnimal,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,
@@ -458,6 +486,22 @@ public class VentanaSolicitudes extends JFrame {
             // Guarda el nuevo estado de la solicitud
             PersistenciaSolicitudes.guardarSolicitudes(
                     gestion
+            );
+            
+            // Registra el nuevo estado de la solicitud
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Cambiar estado solicitud",
+                            "La solicitud "
+                            + codigo
+                            + " cambio a "
+                            + nuevoEstado,
+                            usuarioActual.getUsuario()
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
             );
 
 
