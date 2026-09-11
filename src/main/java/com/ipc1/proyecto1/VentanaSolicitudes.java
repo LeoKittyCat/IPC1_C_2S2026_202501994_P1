@@ -337,6 +337,29 @@ public class VentanaSolicitudes extends JFrame {
 
             return;
         }
+        
+        // Solo los animales disponibles pueden recibir solicitudes
+        if (!animal.getEstado().equalsIgnoreCase("Disponible")) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El animal no esta disponible para adopcion"
+            );
+
+            return;
+        }
+
+
+        // Evita solicitudes pendientes duplicadas
+        if (gestion.existePendiente(codigoAdoptante, codigoAnimal)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ya existe una solicitud pendiente de este adoptante para este animal"
+            );
+
+            return;
+        }
 
 
         Solicitud nuevaSolicitud =
@@ -430,8 +453,7 @@ public class VentanaSolicitudes extends JFrame {
 
             return;
         }
-
-
+        
         // Una solicitud aprobada ya representa una adopcion completada
         // Evita regresar despues a Pendiente o Rechazada
         if (solicitud.getEstado().equalsIgnoreCase("Aprobada")) {
@@ -442,6 +464,23 @@ public class VentanaSolicitudes extends JFrame {
             );
 
             return;
+        }
+
+
+        // Si quiere aprobarla revisa que el animal no haya sido adoptado antes
+        if (nuevoEstado.equalsIgnoreCase("Aprobada")) {
+
+            Animal animal = solicitud.getAnimal();
+
+            if (animal.getEstado().equalsIgnoreCase("Adoptado")) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Este animal ya fue adoptado y no se puede aprobar otra solicitud"
+                );
+
+                return;
+            }
         }
 
 

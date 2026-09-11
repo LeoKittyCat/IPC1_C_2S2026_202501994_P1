@@ -201,4 +201,19 @@ public class GestionAnimales {
     public int getCantidadAnimales() {
         return cantidadAnimales;
     }
+    
+    // Busca el animal aunque este eliminado logicamente
+    public Animal buscarPorCodigoTodos(String codigo) {
+
+        for (int i = 0; i < cantidadAnimales; i++) {
+
+            if (animales[i].getCodigo()
+                    .equalsIgnoreCase(codigo)) {
+
+                return animales[i];
+            }
+        }
+
+        return null;
+    }
 } //fin del metodo

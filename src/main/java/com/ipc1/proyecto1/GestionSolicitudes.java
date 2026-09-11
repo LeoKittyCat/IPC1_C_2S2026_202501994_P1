@@ -180,4 +180,112 @@ public class GestionSolicitudes {
     public int getCantidadSolicitudes() {
         return cantidadSolicitudes;
     }
+    
+    //REVISAMOS SI HAY SOLICITUES PEDIENTES
+    public int contarPendientesPorAnimal(String codigoAnimal) {
+
+        int cantidad = 0;
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAnimal().getCodigo().equalsIgnoreCase(codigoAnimal)
+                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
+
+                cantidad++;
+            }
+        }
+
+        return cantidad;
+    }
+    
+    // Este y elo de arriba solo revisa cuantas solicitudes pendientes hay y cuantas
+    public int contarPendientesPorAdoptante(String codigoAdoptante) {
+
+        int cantidad = 0;
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAdoptante().getCodigo().equalsIgnoreCase(codigoAdoptante)
+                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
+
+                cantidad++;
+            }
+        }
+
+        return cantidad;
+    }
+    
+    // Eliminamos las solicitues pendientes
+    public void eliminarPendientesPorAnimal(String codigoAnimal) {
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAnimal().getCodigo().equalsIgnoreCase(codigoAnimal)
+                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
+
+                for (int j = i; j < cantidadSolicitudes - 1; j++) {
+                    solicitudes[j] = solicitudes[j + 1];
+                }
+
+                solicitudes[cantidadSolicitudes - 1] = null;
+                cantidadSolicitudes--;
+
+                // Regresa una posicion porque el arreglo se movio
+                i--; //Osea, eliminamos al puesto 0, asi que el siguiente en la fila
+                     //Pasa a ser el puesto 0 y asi...
+            }
+            
+            
+        }
+    }
+    
+    public void eliminarPendientesPorAdoptante(String codigoAdoptante) {
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAdoptante().getCodigo().equalsIgnoreCase(codigoAdoptante)
+                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
+
+                for (int j = i; j < cantidadSolicitudes - 1; j++) {
+                    solicitudes[j] = solicitudes[j + 1];
+                }
+
+                solicitudes[cantidadSolicitudes - 1] = null;
+                cantidadSolicitudes--;
+
+                i--;
+            }
+        }
+    }
+    
+    public boolean existePendiente(String codigoAdoptante, String codigoAnimal) {
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+        //pasa por todas las solicitudes que tenemos
+            
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAdoptante().getCodigo()
+                    .equalsIgnoreCase(codigoAdoptante)
+                    && solicitud.getAnimal().getCodigo()
+                    .equalsIgnoreCase(codigoAnimal)
+                    && solicitud.getEstado()
+                    .equalsIgnoreCase("Pendiente")) {
+                //Si encuentra dos o mas identicas y en pendiente devuelve true
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

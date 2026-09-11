@@ -161,4 +161,19 @@ public class GestionAdoptantes {
         public int getCantidadAdoptantes() {
             return cantidadAdoptantes;
         }
+        // Busca el adoptante aunque este eliminado logicamente
+        public Adoptante buscarPorCodigoTodos(String codigo) {
+
+            for (int i = 0; i < cantidadAdoptantes; i++) {
+
+                if (adoptantes[i].getCodigo()
+                        .equalsIgnoreCase(codigo)) {
+
+                    return adoptantes[i];
+                }
+            }
+
+            return null;
+        }
+        
 }

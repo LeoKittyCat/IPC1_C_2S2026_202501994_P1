@@ -4,3 +4,47 @@ Inicio de sesion;El usuario inicio sesion correctamente;sans
 Inicio de sesion;El usuario inicio sesion correctamente;admin
 Registrar animal;Se registro el animal AEIOU;admin
 Eliminar animal;Se elimino logicamente el animal AEIOU;admin
+Inicio de sesion;El usuario inicio sesion correctamente;admin
+Inicio de sesion;El usuario inicio sesion correctamente;auxiliar
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Inicio de sesion fallido;Se intento iniciar sesion con el usuario admin;admin
+Inicio de sesion;El usuario inicio sesion correctamente;admin
+Registrar animal;Se registro el animal 1;admin
+Registrar animal;Se registro el animal 2;admin
+Registrar animal;Se registro el animal 5;admin
+Editar estado animal;Se cambio el estado del animal 1 a Ingresado;admin
+Editar estado animal;Se cambio el estado del animal 1 a En tratamiento;admin
+Editar estado animal;Se cambio el estado del animal 1 a Disponible;admin
+Editar estado animal;Se cambio el estado del animal 5 a Disponible;admin
+Editar estado animal;Se cambio el estado del animal 5 a Disponible;admin
+Editar estado animal;Se cambio el estado del animal 5 a Disponible;admin
+Editar estado animal;Se cambio el estado del animal 5 a Disponible;admin
+Editar estado animal;Se cambio el estado del animal 1 a En tratamiento;admin
+Editar estado animal;Se cambio el estado del animal 2 a Disponible;admin
+Eliminar animal;Se elimino logicamente el animal A001;admin
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Registrar solicitud;Se registro la solicitud SOL0 para el animal A004;sans
+Registrar solicitud;Se registro la solicitud SOL1 para el animal A004;sans
+Cambiar estado solicitud;La solicitud SOL1 cambio a Aprobada;sans
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Editar estado animal;Se cambio el estado del animal A444 a Disponible;sans
+Registrar solicitud;Se registro la solicitud SOL99 para el animal A444;sans
+Cambiar estado solicitud;La solicitud SOL99 cambio a Aprobada;sans
+Eliminar animal;Se elimino logicamente el animal A444;sans
+Editar estado animal;Se cambio el estado del animal A000 a Disponible;sans
+Registrar solicitud;Se registro la solicitud SOL100 para el animal A000;sans
+Eliminar animal;Se elimino logicamente el animal A000;sans
+Registrar solicitud;Se registro la solicitud SOL101 para el animal 2;sans
+Registrar solicitud;Se registro la solicitud SOL102 para el animal 2;sans
+Registrar solicitud;Se registro la solicitud SOL103 para el animal 2;sans
+Cambiar estado solicitud;La solicitud SOL101 cambio a Aprobada;sans
+Cambiar estado solicitud;La solicitud SOL102 cambio a Aprobada;sans
+Inicio de sesion;El usuario inicio sesion correctamente;sans
+Registrar adoptante;Se registro el adoptante ADOP0;sans
+Registrar adoptante;Se registro el adoptante 425252;sans
+Editar adoptante;Se editaron los datos del adoptante A002;sans
+Editar adoptante;Se editaron los datos del adoptante A002;sans
+Eliminar adoptante;Se elimino logicamente el adoptante 425252;sans
+Eliminar adoptante;Se elimino logicamente el adoptante A002;sans
+Registrar solicitud;Se registro la solicitud SOL104 para el animal 5;sans
+Eliminar adoptante;Se elimino logicamente el adoptante A333;sans

@@ -177,6 +177,22 @@ public class LoginFrame extends JFrame {
             dispose();
             // Cierra el login de ususaros 
         }else {
+            
+            // codigo para agregar un evento a la bitacora
+            //Se agrega dentro de if o else
+            //Como en registrar animal
+            // Registra el intento fallido de inicio de sesion
+            gestionBitacora.registrarAccion(
+                    new Bitacora(
+                            "Inicio de sesion fallido",
+                            "Se intento iniciar sesion con el usuario " + usuario,
+                            usuario
+                    )
+            );
+
+            PersistenciaBitacora.guardarBitacora(
+                    gestionBitacora
+            );
 
             JOptionPane.showMessageDialog(
                     this,

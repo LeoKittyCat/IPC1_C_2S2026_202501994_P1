@@ -1,1 +1,8 @@
 A456;A002;A004;Aprobada
+SOL0;A002;A004;Pendiente
+SOL1;A002;A004;Aprobada
+SOL99;A002;A444;Aprobada
+SOL101;A002;2;Aprobada
+SOL102;A002;2;Aprobada
+SOL103;A002;2;Pendiente
+SOL104;A333;5;Pendiente

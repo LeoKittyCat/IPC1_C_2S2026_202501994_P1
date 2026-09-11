@@ -57,4 +57,6 @@ public class Adoptante {
     public void setActivo (boolean activo){
         this.activo = activo;
     }
+    
+    
 }

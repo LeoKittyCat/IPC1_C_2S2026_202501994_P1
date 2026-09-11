@@ -115,10 +115,10 @@ public class PersistenciaSolicitudes {
 
                     // Busca los objetos que ya fueron cargados desde sus archivos
                     Adoptante adoptante =
-                            gestionAdoptantes.buscarPorCodigo(codigoAdoptante);
+                            gestionAdoptantes.buscarPorCodigoTodos(codigoAdoptante);
 
                     Animal animal =
-                            gestionAnimales.buscarPorCodigo(codigoAnimal);
+                            gestionAnimales.buscarPorCodigoTodos(codigoAnimal);
 
 
                     // Solo recupera la solicitud si ambos objetos existen

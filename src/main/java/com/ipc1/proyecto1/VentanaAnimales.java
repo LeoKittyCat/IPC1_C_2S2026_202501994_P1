@@ -16,6 +16,7 @@ public class VentanaAnimales extends JFrame {
     // Decalramos todos estos arriba pa que toda la clase pueda usarla
     private GestionAnimales gestion;
     private VentanaPrincipal ventanaPrincipal;
+    private GestionSolicitudes gestionSolicitudes;
     
     //Bitacora
     private GestionBitacora gestionBitacora;
@@ -38,6 +39,7 @@ public class VentanaAnimales extends JFrame {
 
     public VentanaAnimales(
             GestionAnimales gestion,
+            GestionSolicitudes gestionSolicitudes,
             GestionBitacora gestionBitacora,
             Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
@@ -53,6 +55,8 @@ public class VentanaAnimales extends JFrame {
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
+        
+        this.gestionSolicitudes = gestionSolicitudes;
 
         setTitle("Gestion de Animales");
         setSize(850, 600);
@@ -500,6 +504,9 @@ public class VentanaAnimales extends JFrame {
             );
 
             actualizarTabla();
+            
+            // Limpia los campos para no dejar datos de otro animal en pantalla
+            limpiarCampos();
 
         } else {
 
@@ -532,42 +539,100 @@ public class VentanaAnimales extends JFrame {
         }
 
 
-        int respuesta =
-                JOptionPane.showConfirmDialog(
-                        this,
-                        "Desea eliminar este animal?",
-                        "Confirmar",
-                        JOptionPane.YES_NO_OPTION
-                );
+        // Primero comprueba que el animal exista
+        Animal animal = gestion.buscarPorCodigo(codigo);
+
+        if (animal == null) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Animal no encontrado"
+            );
+
+            return;
+        }
 
 
+        // Revisa si el animal tiene solicitudes pendientes
+        int pendientes =
+                gestionSolicitudes.contarPendientesPorAnimal(codigo);
+
+
+        int respuesta;
+
+
+        if (pendientes > 0) {
+
+            // Si tiene solicitudes pendientes muestra una advertencia
+            respuesta = JOptionPane.showConfirmDialog(
+                    this,
+                    "Este animal tiene "
+                    + pendientes
+                    + " solicitud(es) pendiente(s).\n"
+                    + "Si lo elimina, esas solicitudes tambien seran eliminadas.\n"
+                    + "¿Desea continuar?",
+                    "Advertencia",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+        } else {
+
+            // Si no tiene solicitudes solo pregunta normalmente
+            respuesta = JOptionPane.showConfirmDialog(
+                    this,
+                    "Desea eliminar este animal?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION
+            );
+        }
+
+
+        // Si pone No, no hace absolutamente nada
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
 
 
+        // Elimina primero el animal
         if (gestion.eliminarAnimal(codigo)) {
+
+            // Si tenia solicitudes pendientes tambien las elimina
+            if (pendientes > 0) {
+
+                gestionSolicitudes.eliminarPendientesPorAnimal(codigo);
+
+                PersistenciaSolicitudes.guardarSolicitudes(
+                        gestionSolicitudes
+                );
+            }
+
 
             // Guarda activo=false dentro de animales.txt
             PersistenciaAnimales.guardarAnimales(gestion);
-            
-            // Registra la eliminacion logica del animal (bitacora)
+
+
+            // Registra la eliminacion logica del animal
             gestionBitacora.registrarAccion(
                     new Bitacora(
                             "Eliminar animal",
-                            "Se elimino logicamente el animal " + codigo,
+                            "Se elimino logicamente el animal "
+                            + codigo,
                             usuarioActual.getUsuario()
                     )
             );
+
 
             PersistenciaBitacora.guardarBitacora(
                     gestionBitacora
             );
 
+
             JOptionPane.showMessageDialog(
                     this,
                     "Animal eliminado correctamente"
             );
+
 
             actualizarTabla();
             limpiarCampos();

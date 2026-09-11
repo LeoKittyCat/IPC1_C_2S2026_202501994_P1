@@ -1,2 +1,4 @@
-A002;Juan;438538;375388@gmail.vom;true
-A333;Pedro;23563536;peppadddro@gmail.com;true
+A002;JuaNN;438538;375388@gmail.vom;false
+A333;Pedro;23563536;peppadddro@gmail.com;false
+ADOP0;PACO;243535253G;HJBFJNSVJ@GMAIL.COM;true
+425252;DGSHSXG;521512535FSGDGD;SGSHSHSG;false

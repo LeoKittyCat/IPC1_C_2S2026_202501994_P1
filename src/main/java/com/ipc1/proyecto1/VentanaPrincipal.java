@@ -141,6 +141,7 @@ public VentanaPrincipal(
         VentanaAnimales ventanaAnimales =
             new VentanaAnimales(
                     gestionAnimales,
+                    gestionSolicitudes,
                     gestionBitacora,
                     usuarioActual,
                     this
