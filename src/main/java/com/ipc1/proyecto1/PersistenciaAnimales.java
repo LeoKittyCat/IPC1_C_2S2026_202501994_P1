@@ -19,6 +19,9 @@ public class PersistenciaAnimales {
     // =========================
 
     public static void prepararArchivo() {
+        System.out.println(
+        new File(ARCHIVO).getAbsolutePath()
+);
 
         // Representa la carpeta data, la crea
         File carpeta = new File(CARPETA);

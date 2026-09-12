@@ -183,11 +183,10 @@ public class GestionAnimales {
         // Estados de los animales
     public boolean estadoValido(String estado){
         
-        // Vamos a manejra estos cuatro estados ya que el documento no especifica
-        
         return estado.equalsIgnoreCase("Ingresado")
                 || estado.equalsIgnoreCase("En tratamiento")
                 || estado.equalsIgnoreCase("Disponible")
+                || estado.equalsIgnoreCase("En proceso")
                 || estado.equalsIgnoreCase("Adoptado");
                 
     }

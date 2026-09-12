@@ -152,7 +152,6 @@ public class VentanaSolicitudes extends JFrame {
         cmbEstado =
                 new JComboBox<>(
                         new String[]{
-                            "Pendiente",
                             "Aprobada",
                             "Rechazada"
                         }
@@ -338,8 +337,10 @@ public class VentanaSolicitudes extends JFrame {
             return;
         }
         
-        // Solo los animales disponibles pueden recibir solicitudes
-        if (!animal.getEstado().equalsIgnoreCase("Disponible")) {
+        // El animal puede recibir solicitudes si esta disponible
+        // o si ya tiene otras solicitudes en proceso
+        if (!animal.getEstado().equalsIgnoreCase("Disponible")
+                && !animal.getEstado().equalsIgnoreCase("En proceso")) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -377,6 +378,19 @@ public class VentanaSolicitudes extends JFrame {
 
 
         if (registrada) {
+            
+            // Al registrar una solicitud el animal pasa a En proceso
+            gestionAnimales.editarEstado(
+                    animal.getCodigo(),
+                    "En proceso"
+            );
+
+            // Guarda el nuevo estado del animal
+            PersistenciaAnimales.guardarAnimales(
+                    gestionAnimales
+            );
+            
+            
 
             // La solicitud comienza como Pendiente desde su constructor
             PersistenciaSolicitudes.guardarSolicitudes(gestion);
@@ -454,13 +468,12 @@ public class VentanaSolicitudes extends JFrame {
             return;
         }
         
-        // Una solicitud aprobada ya representa una adopcion completada
-        // Evita regresar despues a Pendiente o Rechazada
-        if (solicitud.getEstado().equalsIgnoreCase("Aprobada")) {
+        // Solo una solicitud pendiente puede aprobarse o rechazarse
+        if (!solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Esta solicitud ya fue aprobada"
+                    "Solo se pueden modificar solicitudes pendientes"
             );
 
             return;
@@ -470,17 +483,33 @@ public class VentanaSolicitudes extends JFrame {
         // Si quiere aprobarla revisa que el animal no haya sido adoptado antes
         if (nuevoEstado.equalsIgnoreCase("Aprobada")) {
 
-            Animal animal = solicitud.getAnimal();
+            Animal animal =
+                    solicitud.getAnimal();
 
-            if (animal.getEstado().equalsIgnoreCase("Adoptado")) {
+            // Rechaza las otras solicitudes del mismo animal
+            gestion.rechazarOtrasPendientes(
+                    animal.getCodigo(),
+                    solicitud.getCodigo()
+            );
 
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Este animal ya fue adoptado y no se puede aprobar otra solicitud"
-                );
+            // Animal pasa a Adoptado
+            gestionAnimales.editarEstado(
+                    animal.getCodigo(),
+                    "Adoptado"
+            );
 
-                return;
-            }
+            // Libera su espacio
+            gestionUbicaciones.liberarAnimal(animal);
+
+            // Guarda animales
+            PersistenciaAnimales.guardarAnimales(
+                    gestionAnimales
+            );
+
+            // Guarda ubicaciones
+            PersistenciaUbicaciones.guardarUbicaciones(
+                    gestionUbicaciones
+            );
         }
 
 
@@ -520,6 +549,34 @@ public class VentanaSolicitudes extends JFrame {
                         gestionUbicaciones
                 );
             }
+            
+            else if (nuevoEstado.equalsIgnoreCase("Rechazada")) {
+
+            Animal animal =
+                    solicitud.getAnimal();
+
+            // Si ya no quedan solicitudes pendientes
+            // el animal vuelve a estar Disponible
+            if (gestion.contarPendientesPorAnimal(
+                    animal.getCodigo()) == 0) {
+
+                gestionAnimales.editarEstado(
+                        animal.getCodigo(),
+                        "Disponible"
+                );
+
+                PersistenciaAnimales.guardarAnimales(
+                        gestionAnimales
+                );
+            }
+        }
+
+
+        // Guarda el nuevo estado de la solicitud
+        PersistenciaSolicitudes.guardarSolicitudes(
+                gestion
+        );
+            
 
 
             // Guarda el nuevo estado de la solicitud

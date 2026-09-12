@@ -17,6 +17,7 @@ public class VentanaAnimales extends JFrame {
     private GestionAnimales gestion;
     private VentanaPrincipal ventanaPrincipal;
     private GestionSolicitudes gestionSolicitudes;
+    private GestionUbicaciones gestionUbicaciones;
     
     //Bitacora
     private GestionBitacora gestionBitacora;
@@ -40,6 +41,7 @@ public class VentanaAnimales extends JFrame {
     public VentanaAnimales(
             GestionAnimales gestion,
             GestionSolicitudes gestionSolicitudes,
+            GestionUbicaciones gestionUbicaciones,
             GestionBitacora gestionBitacora,
             Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
@@ -57,6 +59,8 @@ public class VentanaAnimales extends JFrame {
         this.ventanaPrincipal = ventanaPrincipal;
         
         this.gestionSolicitudes = gestionSolicitudes;
+        
+        this.gestionUbicaciones = gestionUbicaciones;
 
         setTitle("Gestion de Animales");
         setSize(850, 600);
@@ -159,8 +163,7 @@ public class VentanaAnimales extends JFrame {
                         new String[]{
                             "Ingresado",
                             "En tratamiento",
-                            "Disponible",
-                            "Adoptado"
+                            "Disponible"
                         }
                 );
 
@@ -540,7 +543,9 @@ public class VentanaAnimales extends JFrame {
 
 
         // Primero comprueba que el animal exista
-        Animal animal = gestion.buscarPorCodigo(codigo);
+        Animal animal =
+                gestion.buscarPorCodigo(codigo);
+
 
         if (animal == null) {
 
@@ -553,66 +558,59 @@ public class VentanaAnimales extends JFrame {
         }
 
 
-        // Revisa si el animal tiene solicitudes pendientes
+        // No permite eliminar un animal que todavia ocupa un espacio
+        if (gestionUbicaciones.animalYaAsignado(animal)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se puede eliminar el animal porque todavia ocupa un espacio del refugio"
+            );
+
+            return;
+        }
+
+
+        // No permite eliminar un animal con solicitudes pendientes
         int pendientes =
                 gestionSolicitudes.contarPendientesPorAnimal(codigo);
 
 
-        int respuesta;
-
-
         if (pendientes > 0) {
 
-            // Si tiene solicitudes pendientes muestra una advertencia
-            respuesta = JOptionPane.showConfirmDialog(
+            JOptionPane.showMessageDialog(
                     this,
-                    "Este animal tiene "
+                    "No se puede eliminar el animal porque tiene "
                     + pendientes
-                    + " solicitud(es) pendiente(s).\n"
-                    + "Si lo elimina, esas solicitudes tambien seran eliminadas.\n"
-                    + "¿Desea continuar?",
-                    "Advertencia",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
+                    + " solicitud(es) pendiente(s)"
             );
 
-        } else {
-
-            // Si no tiene solicitudes solo pregunta normalmente
-            respuesta = JOptionPane.showConfirmDialog(
-                    this,
-                    "Desea eliminar este animal?",
-                    "Confirmar",
-                    JOptionPane.YES_NO_OPTION
-            );
+            return;
         }
 
 
-        // Si pone No, no hace absolutamente nada
+        // Confirmacion normal
+        int respuesta =
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Desea eliminar este animal?",
+                        "Confirmar",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+
         if (respuesta != JOptionPane.YES_OPTION) {
             return;
         }
 
 
-        // Elimina primero el animal
+        // Eliminacion logica
         if (gestion.eliminarAnimal(codigo)) {
 
-            // Si tenia solicitudes pendientes tambien las elimina
-            if (pendientes > 0) {
-
-                gestionSolicitudes.eliminarPendientesPorAnimal(codigo);
-
-                PersistenciaSolicitudes.guardarSolicitudes(
-                        gestionSolicitudes
-                );
-            }
+            PersistenciaAnimales.guardarAnimales(
+                    gestion
+            );
 
 
-            // Guarda activo=false dentro de animales.txt
-            PersistenciaAnimales.guardarAnimales(gestion);
-
-
-            // Registra la eliminacion logica del animal
             gestionBitacora.registrarAccion(
                     new Bitacora(
                             "Eliminar animal",

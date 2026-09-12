@@ -1,10 +1,3 @@
-A001;Paco;Perro;45;Ingresado;false
-A004;Paco;Perro;3;Adoptado;true
-A444;Michi;Gato;56;Adoptado;false
-Perr0;Pato;Gato;69;Ingresado;true
-A000;Pacheco;Perro;33;Disponible;false
-A006;Pacheco;Perro;33;Ingresado;false
-AEIOU;BOBINSKI;Gato;77;Ingresado;false
-1;Cerdo;Perro;324;En tratamiento;true
-2;Pablo;Gato;3;Adoptado;true
-5;6466;Perro;353;Disponible;true
+AN-001;Firulais;Perro;4;Adoptado;false
+AN-002;Michi;Gato;5;Adoptado;false
+AN-003;4;Perro;4;Disponible;true

@@ -27,6 +27,8 @@ public class VentanaAdoptantes extends JFrame {
 
     private JTable tabla; //Crea el componente visual
     private DefaultTableModel modeloTabla;
+    private GestionSolicitudes gestionSolicitudes;
+    
 
 
     // =========================
@@ -35,6 +37,7 @@ public class VentanaAdoptantes extends JFrame {
 
     public VentanaAdoptantes(
             GestionAdoptantes gestion,
+            GestionSolicitudes gestionSolicitudes,
             GestionBitacora gestionBitacora,
             Usuario usuarioActual,
             VentanaPrincipal ventanaPrincipal) {
@@ -50,6 +53,8 @@ public class VentanaAdoptantes extends JFrame {
 
         // Guarda la ventana principal para poder regresar despues
         this.ventanaPrincipal = ventanaPrincipal;
+        this.gestionSolicitudes = gestionSolicitudes;
+        
 
         setTitle("Gestion de Adoptantes");
         setSize(850, 600);
@@ -348,51 +353,95 @@ public class VentanaAdoptantes extends JFrame {
         String codigo =
                 txtCodigo.getText().trim();
 
+        String nombre =
+                txtNombre.getText().trim();
 
-        if (codigo.isEmpty()) {
+
+        // Debe escribir por lo menos codigo o nombre
+        if (codigo.isEmpty() && nombre.isEmpty()) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Debe ingresar el codigo del adoptante"
+                    "Debe ingresar el codigo o nombre del adoptante"
             );
 
             return;
         }
 
 
-        Adoptante adoptante =
-                gestion.buscarPorCodigo(codigo);
+        // Si escribio codigo, busca por codigo
+        if (!codigo.isEmpty()) {
+
+            Adoptante adoptante =
+                    gestion.buscarPorCodigo(codigo);
 
 
-        if (adoptante == null) {
+            if (adoptante == null) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Adoptante no encontrado"
+                );
+
+                return;
+            }
+
+
+            txtNombre.setText(
+                    adoptante.getNombre()
+            );
+
+            txtTelefono.setText(
+                    adoptante.getTelefono()
+            );
+
+            txtCorreo.setText(
+                    adoptante.getCorreo()
+            );
+
+
+            modeloTabla.setRowCount(0);
+
+            agregarAdoptanteTabla(adoptante);
+
+            return;
+        }
+
+
+        // Si no escribio codigo, busca por nombre
+        modeloTabla.setRowCount(0);
+
+        Adoptante[] adoptantes =
+                gestion.getAdoptantes();
+
+        int cantidad =
+                gestion.getCantidadAdoptantes();
+
+        boolean encontrado = false;
+
+
+        for (int i = 0; i < cantidad; i++) {
+
+            if (adoptantes[i].isActivo()
+                    && adoptantes[i].getNombre()
+                    .equalsIgnoreCase(nombre)) {
+
+                agregarAdoptanteTabla(
+                        adoptantes[i]
+                );
+
+                encontrado = true;
+            }
+        }
+
+
+        if (!encontrado) {
 
             JOptionPane.showMessageDialog(
                     this,
                     "Adoptante no encontrado"
             );
-
-            return;
         }
-
-
-        // Llena los campos con la informacion del adoptante encontrado
-        txtNombre.setText(
-                adoptante.getNombre()
-        );
-
-        txtTelefono.setText(
-                adoptante.getTelefono()
-        );
-
-        txtCorreo.setText(
-                adoptante.getCorreo()
-        );
-
-
-        // Limpia la tabla y muestra solamente el adoptante encontrado
-        modeloTabla.setRowCount(0);
-
-        agregarAdoptanteTabla(adoptante);
     }
 
 
@@ -472,7 +521,6 @@ public class VentanaAdoptantes extends JFrame {
         }
     }
 
-
     // =========================
     // ELIMINAR ADOPTANTE
     // =========================
@@ -488,6 +536,41 @@ public class VentanaAdoptantes extends JFrame {
             JOptionPane.showMessageDialog(
                     this,
                     "Debe ingresar el codigo del adoptante"
+            );
+
+            return;
+        }
+
+
+        // Primero comprobamos que el adoptante exista
+        Adoptante adoptante =
+                gestion.buscarPorCodigo(codigo);
+
+
+        if (adoptante == null) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Adoptante no encontrado"
+            );
+
+            return;
+        }
+
+
+        // Revisa si todavia tiene solicitudes pendientes
+        int pendientes =
+                gestionSolicitudes
+                        .contarPendientesPorAdoptante(codigo);
+
+
+        if (pendientes > 0) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se puede eliminar el adoptante porque tiene "
+                    + pendientes
+                    + " solicitud(es) pendiente(s)"
             );
 
             return;
@@ -510,10 +593,11 @@ public class VentanaAdoptantes extends JFrame {
 
         if (gestion.eliminarAdoptante(codigo)) {
 
-            // Guarda activo=false dentro de adoptantes.txt
-            PersistenciaAdoptantes.guardarAdoptantes(gestion);
-            
-            // Registra la eliminacion logica del adoptante
+            PersistenciaAdoptantes.guardarAdoptantes(
+                    gestion
+            );
+
+
             gestionBitacora.registrarAccion(
                     new Bitacora(
                             "Eliminar adoptante",
@@ -522,24 +606,20 @@ public class VentanaAdoptantes extends JFrame {
                     )
             );
 
+
             PersistenciaBitacora.guardarBitacora(
                     gestionBitacora
             );
+
 
             JOptionPane.showMessageDialog(
                     this,
                     "Adoptante eliminado correctamente"
             );
 
+
             actualizarTabla();
             limpiarCampos();
-
-        } else {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Adoptante no encontrado"
-            );
         }
     }
 

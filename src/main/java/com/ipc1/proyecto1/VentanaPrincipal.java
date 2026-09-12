@@ -142,6 +142,7 @@ public VentanaPrincipal(
             new VentanaAnimales(
                     gestionAnimales,
                     gestionSolicitudes,
+                    gestionUbicaciones,
                     gestionBitacora,
                     usuarioActual,
                     this
@@ -159,6 +160,7 @@ public VentanaPrincipal(
         VentanaAdoptantes ventanaAdoptantes =
                 new VentanaAdoptantes(
                         gestionAdoptantes,
+                        gestionSolicitudes,
                         gestionBitacora,
                         usuarioActual,
                         this
