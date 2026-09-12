@@ -62,7 +62,54 @@ public class GestionSolicitudes {
         // null significa que no encontramos ninguna solicitud
         return null;
     }
+    
+    // =========================
+    // CONTAR PENDIENTES DE UN ANIMAL
+    // =========================
 
+    public int contarPendientesPorAnimal(String codigoAnimal) {
+
+        int contador = 0;
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAnimal().getCodigo()
+                    .equalsIgnoreCase(codigoAnimal)
+                    && solicitud.getEstado()
+                    .equalsIgnoreCase("Pendiente")) {
+
+                contador++;
+            }
+        }
+
+        return contador;
+    }
+    
+    // =========================
+    // RECHAZAR OTRAS PENDIENTES
+    // =========================
+
+    public void rechazarOtrasPendientes(
+            String codigoAnimal,
+            String codigoAprobada) {
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            Solicitud solicitud = solicitudes[i];
+
+            if (solicitud.getAnimal().getCodigo()
+                    .equalsIgnoreCase(codigoAnimal)
+                    && solicitud.getEstado()
+                    .equalsIgnoreCase("Pendiente")
+                    && !solicitud.getCodigo()
+                    .equalsIgnoreCase(codigoAprobada)) {
+
+                solicitud.setEstado("Rechazada");
+            }
+        }
+    }
 
     // =========================
     // CAMBIAR ESTADO
@@ -181,26 +228,7 @@ public class GestionSolicitudes {
         return cantidadSolicitudes;
     }
     
-    //REVISAMOS SI HAY SOLICITUES PEDIENTES
-    public int contarPendientesPorAnimal(String codigoAnimal) {
-
-        int cantidad = 0;
-
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-
-            Solicitud solicitud = solicitudes[i];
-
-            if (solicitud.getAnimal().getCodigo().equalsIgnoreCase(codigoAnimal)
-                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
-
-                cantidad++;
-            }
-        }
-
-        return cantidad;
-    }
-    
-    // Este y elo de arriba solo revisa cuantas solicitudes pendientes hay y cuantas
+    // Este y lo de arriba solo revisa cuantas solicitudes pendientes hay y cuantas
     public int contarPendientesPorAdoptante(String codigoAdoptante) {
 
         int cantidad = 0;
@@ -219,53 +247,6 @@ public class GestionSolicitudes {
         return cantidad;
     }
     
-    // Eliminamos las solicitues pendientes
-    public void eliminarPendientesPorAnimal(String codigoAnimal) {
-
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-
-            Solicitud solicitud = solicitudes[i];
-
-            if (solicitud.getAnimal().getCodigo().equalsIgnoreCase(codigoAnimal)
-                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
-
-                for (int j = i; j < cantidadSolicitudes - 1; j++) {
-                    solicitudes[j] = solicitudes[j + 1];
-                }
-
-                solicitudes[cantidadSolicitudes - 1] = null;
-                cantidadSolicitudes--;
-
-                // Regresa una posicion porque el arreglo se movio
-                i--; //Osea, eliminamos al puesto 0, asi que el siguiente en la fila
-                     //Pasa a ser el puesto 0 y asi...
-            }
-            
-            
-        }
-    }
-    
-    public void eliminarPendientesPorAdoptante(String codigoAdoptante) {
-
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-
-            Solicitud solicitud = solicitudes[i];
-
-            if (solicitud.getAdoptante().getCodigo().equalsIgnoreCase(codigoAdoptante)
-                    && solicitud.getEstado().equalsIgnoreCase("Pendiente")) {
-
-                for (int j = i; j < cantidadSolicitudes - 1; j++) {
-                    solicitudes[j] = solicitudes[j + 1];
-                }
-
-                solicitudes[cantidadSolicitudes - 1] = null;
-                cantidadSolicitudes--;
-
-                i--;
-            }
-        }
-    }
-    
     public boolean existePendiente(String codigoAdoptante, String codigoAnimal) {
 
         for (int i = 0; i < cantidadSolicitudes; i++) {
@@ -280,7 +261,7 @@ public class GestionSolicitudes {
                     .equalsIgnoreCase(codigoAnimal)
                     && solicitud.getEstado()
                     .equalsIgnoreCase("Pendiente")) {
-                //Si encuentra dos o mas identicas y en pendiente devuelve true
+                //Devuelve true si encuentra una sola solicitud pendiente con esa misma combinación adoptante-animal.
 
                 return true;
             }
